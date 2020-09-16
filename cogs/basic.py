@@ -10,7 +10,12 @@ class Basic(commands.Cog):
     async def on_ready(self):
         print("Elvis is ready!")
 
+    # Commmands
+    @commands.command(aliases = ["Elvis", "greet", "hello"], name = "elvis")
+    async def _introduce(self, ctx):
+        """Elvis says hi."""
 
+        await ctx.send("Hi! I'm Elvis. Here to listen to all your needs😁. Just type ' !help ' to learn about what I can do! ")
 
 
 def setup(elvis):
