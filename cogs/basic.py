@@ -17,11 +17,11 @@ class Basic(commands.Cog):
     async def _introduce(self, ctx):
         """Elvis says hi."""
 
-        await ctx.send("Hi! I'm Elvis. Here to listen to all your needs😁. Just type ' !help ' to learn about what I can do! ")
+        await ctx.send("Hi! I'm Elvis. Here to listen to all your needs😁. Just type ' .help ' to learn about what I can do! ")
 
     @commands.command(name = "weather", aliases = ["w","temp","mausam"])
     async def _weather(self,ctx,*,location):
-        """Gives weather of input location."""
+        """Gives weather of input city."""
 
         result = Weather(location)
         info_list = result.get_info() 
