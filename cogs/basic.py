@@ -26,7 +26,7 @@ class Basic(commands.Cog):
         result = Weather(location)
         info_list = result.get_info() 
         if len(info_list) != 0 :
-            weather = (discord.Embed(title='Weather',
+            weather = (discord.Embed(title='City',
                                 description=f'```{info_list[0]}```',
                                 color=discord.Color.red())
                     .add_field(name='Conditions', value=f"{info_list[1].capitalize()}")

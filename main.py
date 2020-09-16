@@ -4,6 +4,7 @@ from get_token import token as TOKEN
 from discord.ext import commands
 
 elvis = commands.Bot(command_prefix = ".")
+elvis.remove_command("help")
 
 for cog in os.listdir("./cogs"):
     if cog.endswith('.py'):
