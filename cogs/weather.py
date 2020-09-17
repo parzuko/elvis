@@ -62,6 +62,7 @@ class GiveWeather(commands.Cog):
         else:
             await ctx.send("I'm Having a bit of trouble 😅, I'm better at music tho!")
 
+        await ctx.message.add_reaction("🌞")
 
 def setup(elvis):
     elvis.add_cog(GiveWeather(elvis))
