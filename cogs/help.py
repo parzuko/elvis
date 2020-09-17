@@ -29,6 +29,15 @@ class Help(commands.Cog):
         embed.add_field(name = "`.clear [number]`", value = "Owner can delete input number of messages.", inline = False)
         await ctx.send(embed=embed)
     
+    @commands.command(name = "help-weather", aliases = ["helpweather", "hw", "helpw"])
+    async def _help_weather(self, ctx):
+        embed = discord.Embed(
+            title = "Weather Command",
+            color = discord.Color.from_rgb(244,66,146)
+        )
+        embed.add_field(name = "`.weather [city]`", value = "Returns weather of the input city.", inline = False)
+        await ctx.send(embed=embed)
+    
     
 
 def setup(elvis):
