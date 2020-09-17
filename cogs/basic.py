@@ -27,7 +27,7 @@ class Basic(commands.Cog):
         else:
             await ctx.send(f"Sorry! Only `{owner[:-5]}` can ask  me to clean.")
 
-    @commands.command(name = "owner", aliases = ["o", "Owner", "king", "creator"])
+    @commands.command(name = "owner", aliases = ["o", "Owner", "king", "creator", "maalik"])
     async def _who_owner(self, ctx):
         owner = str(ctx.message.guild.owner)[:-5]
         await ctx.send(f"`{owner}` is the creator of this aweomse server!")
