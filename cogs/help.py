@@ -24,9 +24,9 @@ class Help(commands.Cog):
             title = "Basic Commands",
             color = discord.Color.from_rgb(244,66,146)
         )
-        embed.add_field(name = "`.elvis`", value = "Elvis says hi.\n Aliases = `.Elvis | .sun | .hello `", inline = False)
-        embed.add_field(name = "`.owner`", value = "Responds with name of the owner of the guild.\n Aliases = `.Owner | .o | .king | .creator | .maalik `", inline = False)
-        embed.add_field(name = "`.clear [number]`", value = "Owner can delete input number of messages.\n Aliases = `.c | .clean | .Clear | .saaf `", inline = False)
+        embed.add_field(name = "`.elvis`", value = "Elvis says hi.", inline = False)
+        embed.add_field(name = "`.owner`", value = "Responds with name of the owner of the guild.", inline = False)
+        embed.add_field(name = "`.clear [number]`", value = "Owner can delete input number of messages.", inline = False)
         await ctx.send(embed=embed)
     
     

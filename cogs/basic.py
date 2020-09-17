@@ -21,7 +21,7 @@ class Basic(commands.Cog):
     @commands.command(name = "clear", aliases = ["saaf", "clean", "Clear", "c"])
     async def _clear(self, ctx, amount=5):
         owner = str(ctx.message.guild.owner)
-        if ctx.message.author == owner:
+        if ctx.message.author == ctx.message.guild.owner:
             await ctx.channel.purge(limit=amount)
             await ctx.send(f"Deleted previous {amount} messages! 🧹🧼🧽 ")
         else:
