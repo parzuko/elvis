@@ -44,13 +44,13 @@ class GiveWeather(commands.Cog):
     def __init__(self, elvis):
         self.elvis = elvis
 
-    @commands.command(name = "weather", aliases = ["w","temp","mausam"])
-    async def _weather(self,ctx,*,location):
+    @commands.command(name = "weather", aliases = ["w", "temp", "mausam"])
+    async def _weather(self, ctx, *, location):
         """Gives weather of input city."""
 
         result = Weather(location)
         info_list = result.get_info() 
-        if len(info_list) != 0 :
+        if len(info_list) != 0:
             weather = (discord.Embed(title='City',
                                 description=f'```{info_list[0]}```',
                                 color=discord.Color.red())
@@ -60,7 +60,7 @@ class GiveWeather(commands.Cog):
 
             await ctx.send(embed=weather)
         else:
-            await ctx.send("I'm Having a bit of trouble😅, I'm better at music tho!")
+            await ctx.send("I'm Having a bit of trouble 😅, I'm better at music tho!")
 
 
 def setup(elvis):

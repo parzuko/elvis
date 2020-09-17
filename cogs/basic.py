@@ -1,7 +1,7 @@
 import discord
 import sys, os
 from discord.ext import commands
-import requests
+
 
 class Basic(commands.Cog):
     def __init__(self, elvis):
@@ -15,11 +15,12 @@ class Basic(commands.Cog):
     async def _introduce(self, ctx):
         """Elvis says hi."""
 
-        await ctx.send("Hi! I'm Elvis. Here to listen to all your needs😁. Just type ' .help ' to learn about what I can do! ")
+        await ctx.send("Hi! I'm Elvis. Here to listen to all your needs 😁. Just type ' .help ' to learn about what I can do! ")
+        
 
     @commands.command(name = "clear", aliases = ["saaf", "clean", "Clear", "c"])
-    async def _clear(self, ctx, amount = 5):
-        await ctx.channel.purge(limit = amount)
+    async def _clear(self, ctx, amount=5):
+        await ctx.channel.purge(limit=amount)
         await ctx.send(f"Deleted previous {amount} messages! 🧹🧼🧽 ")
 
 def setup(elvis):
