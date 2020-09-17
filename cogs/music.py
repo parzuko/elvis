@@ -1,6 +1,12 @@
 import discord
 import youtube_dl
+import asyncio
+import functools
+import itertools
+import math
+import random
 from discord.ext import commands
+from async_timeout import timeout
 
 # Incase of YTDL OR FFFMPEGG Erros
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -22,7 +28,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         "noplaylist" : True,
         "nocheckcertificate" : True,
         "ignoreerrors" : False,
-        "logtostderr"": False,
+        "logtostderr": False,
         "quiet": True,
         "no_warnings": True,
         "default_search": "auto",
