@@ -9,6 +9,29 @@ import discord
 from discord.ext import commands
 import requests
 
+icons = {
+    "01d" : "🌞",
+    "01n" : "🌜",
+    "02d" : "⛅",
+    "02n" : "⛅",
+    "03d" : "⛅",
+    "03n" : "⛅",
+    "04d" : "🌂",   
+    "04n" : "🌂",
+    "09d" : "🌂",
+    "09n" : "🌂",
+    "10n" : "☔",
+    "10d" : "☔",
+    "11n" : "☔",
+    "11d" : "☔",
+    "13n" : "⛄",
+    "13d" : "⛄",
+    "50n" : "💨",
+    "50d" : "💨"
+}
+
+
+
 class Weather:
     def __init__(self, location):
         self.location = location
@@ -33,8 +56,9 @@ class Weather:
             name = information['name']
             desc = information['weather'][0]['description']
             temp = information['main']["temp"]
+            icon = information['weather'][0]["icon"]
 
-            final_list = [name,desc,temp]
+            final_list = [name,desc,temp,icon]
         except:
             final_list = []
         
@@ -60,6 +84,7 @@ class GiveWeather(commands.Cog):
                         )
                 weather.add_field(name='Conditions', value=f"{info_list[1].capitalize()}")
                 weather.add_field(name='Temperature',value=f"{info_list[2]}°C") 
+                weather.add_field(name='Climate', value = f"{icons[info_list[3]]}")
 
                 await ctx.send(embed=weather)
             else:
