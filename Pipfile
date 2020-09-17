@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 discord = "*"
 requests = "*"
+youtube-dl = "*"
 
 [requires]
 python_version = "3.8"
