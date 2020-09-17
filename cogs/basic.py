@@ -20,13 +20,18 @@ class Basic(commands.Cog):
 
     @commands.command(name = "clear", aliases = ["saaf", "clean", "Clear", "c"])
     async def _clear(self, ctx, amount=5):
-        await ctx.channel.purge(limit=amount)
-        await ctx.send(f"Deleted previous {amount} messages! 🧹🧼🧽 ")
-    
+        owner = str(ctx.message.guild.owner)
+        if ctx.message.author == owner:
+            await ctx.channel.purge(limit=amount)
+            await ctx.send(f"Deleted previous {amount} messages! 🧹🧼🧽 ")
+        else:
+            await ctx.send(f"Sorry! Only `{owner[:-5]}` can ask  me to clean.")
+
     @commands.command(name = "owner", aliases = ["o", "Owner", "king", "creator"])
     async def _who_owner(self, ctx):
         owner = str(ctx.message.guild.owner)[:-5]
-        await ctx.send(f"`*{owner}*` is the creator of this aweomse server!")
+        await ctx.send(f"`{owner}` is the creator of this aweomse server!")
+        await ctx.message.add_reaction("👑")
 
 def setup(elvis):
     elvis.add_cog(Basic(elvis))
