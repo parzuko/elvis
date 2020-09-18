@@ -8,6 +8,44 @@ import random
 from discord.ext import commands
 from async_timeout import timeout
 
+class VoiceState:
+    def __init__(self, elvis: commands.Bot, ctx: commands.Context):
+        self.elvis = elvis
+        self._ctx = ctx
+
+        self.current = None
+        self.voice = None
+        self.next  = asyncio.Event()
+        self.songs = SongQueue()
+        self._loop = False
+        self._volume = 0.5
+        self.skip_votes = set()
+        self.audio_player = elvis.loop.create_task(self.audio_player_task())
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Incase of YTDL OR FFFMPEGG Erros
 youtube_dl.utils.bug_reports_message = lambda: ''
 
@@ -147,7 +185,7 @@ class Song:
 
         return embed
     
-class SongQueue(asyncio.Queue):
+class SongQueue(asyncio.Queue): 
     def __getitem__(self, item):
         if isinstance(item, slice):
             return list(itertools.islice(self._queue, item.start, item.stop, item.step))
@@ -155,7 +193,7 @@ class SongQueue(asyncio.Queue):
             return self._queue[item]
 
     def __iter__(self):
-        return self._queue
+        return self._queue.__iter__
     
     def __len__(self):
         return self.qsize()
