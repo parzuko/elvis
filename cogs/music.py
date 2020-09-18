@@ -273,7 +273,7 @@ class Music(commands.Cog):
     async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
         await ctx.send(f"An error occurred: {str(error)}")
 
-    @commands.command(name="join", aliases=["j","aaja"])
+    @commands.command(name="join", aliases=["j","aaja",])
     async def _join(self, ctx: commands.Context):
         try:
             destination = ctx.author.voice.channel
@@ -288,7 +288,7 @@ class Music(commands.Cog):
                 await ctx.voice_state.voice.move_to(destination)
                 return
             ctx.voice_state.voice = await destination.connect()    
-    @commands.command(name="go", aliases=["nikal","leave","disconnect"])
+    @commands.command(name="go", aliases=["nikal","leave","disconnect","g"])
     async def _leave(self, ctx: commands.Context):
         if not ctx.voice_state.voice:
             await ctx.message.add_reaction("😥")
@@ -298,14 +298,12 @@ class Music(commands.Cog):
         await ctx.message.add_reaction("😓")
         del self.voice_states[ctx.guild.id]
 
-    @commands.command()
-    async def deaf(self, ctx):
-        voice_client = ctx.guild.voice_client
-        if not voice_client:
-            return
-        channel = voice_client.channel
-        await voice_client.main_ws.voice_state(ctx.guild.id, channel.id, self_deaf=True)
+    @commands.command(name="play",aliases=["baja"])
+    async def _play(self, ctx: commands.Context, *, search ):
+        if not ctx.voice_state.voice:
+            await ctx.invoke(self._join)
 
+    
 
 def setup(elvis):
     elvis.add_cog(Music(elvis))
