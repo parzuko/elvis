@@ -124,3 +124,26 @@ class YTDLSource(discord.PCMVolumeTransformer):
             duration.append(f"{seconds} seconds")
 
         return ', '.join(duration)
+
+
+class Song:
+    __slots__ = ("source", "requester")
+
+    def __init__(self, source: YTDLSource):
+        self.source = source
+        self.requester = source.requester
+
+    def create_embed(self):
+        embed = discord.Embed(
+            title = "Now Playing",
+            description = f"```css\n{self.source.title}```",
+            color = discord.Color.from_rgb(244,66,146)
+        )
+        embed.add_field(name="Duration",value=self.source.duration)
+        embed.add_field(name="Requested By", value=self.source.requester)
+        embed.add_field(name="Uploader",value=f"[{self.source.uploader}]({self.source.uploader_url})")
+        embed.add_field(name="URL", value=f"[Click]({self.source.url})")
+        embed.set_thumbnail(url=self.source.thumbnail)
+
+        return embed
+    
