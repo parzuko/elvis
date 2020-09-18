@@ -273,3 +273,37 @@ class Music(commands.Cog):
     async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
         await ctx.send(f"An error occurred: {str(error)}")
 
+    @commands.command(name="join", aliases=["j","aaja"])
+    async def _join(self, ctx: commands.Context):
+        try:
+            destination = ctx.author.voice.channel
+        except Exception:
+            destination = None
+
+        
+        if destination == None:
+            await ctx.send("You'll have to join a voice channel before I can do that.")
+            await ctx.message.add_reaction("🚫")
+        else:
+            await ctx.message.add_reaction("🎸")
+            if ctx.voice_state.voice:
+                await ctx.voice_state.voice.move_to(destination)
+                return
+
+            ctx.voice_state.voice = await destination.connect()
+    @commands.command(name="go", aliases=["nikal","leave","disconnect"])
+    async def _leave(self, ctx: commands.Context):
+        if not ctx.voice_state.voice:
+            return await ctx.send("I'm not connected to any voice channel!")
+
+    @commands.command()
+    async def deaf(self, ctx):
+        voice_client = ctx.guild.voice_client
+        if not voice_client:
+            return
+        channel = voice_client.channel
+        await voice_client.main_ws.voice_state(ctx.guild.id, channel.id, self_deaf=True)
+
+
+def setup(elvis):
+    elvis.add_cog(Music(elvis))
