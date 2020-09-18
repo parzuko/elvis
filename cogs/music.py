@@ -315,7 +315,12 @@ class Music(commands.Cog):
             finally:
                 await ctx.message.add_reaction("⏯")
 
-    
+    @commands.command(name="stop",aliases=["ruk","s","band"])
+    async def _stop(self, ctx: commands.Context):
+        ctx.voice_state.songs.clear()
+        if not ctx.voice_state.is_playing:
+            ctx.voice_state.voice.stop()
+            await ctx.message.add_reaction('⏹')    
 
 def setup(elvis):
     elvis.add_cog(Music(elvis))
