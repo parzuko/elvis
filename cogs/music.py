@@ -298,10 +298,22 @@ class Music(commands.Cog):
         await ctx.message.add_reaction("😓")
         del self.voice_states[ctx.guild.id]
 
-    @commands.command(name="play",aliases=["baja"])
+    @commands.command(name="play",aliases=["baja", "p"])
     async def _play(self, ctx: commands.Context, *, search ):
         if not ctx.voice_state.voice:
             await ctx.invoke(self._join)
+        
+        async with ctx.typing():
+            try:
+                source = await YTDLSource.create_source(ctx, search,loop=self.elvis.loop)
+            except Exception:
+                await ctx.send("There was a problem 🤔. Try again ?")
+            else:
+                song = Song(source)
+                await ctx.voice_state.songs.put(song)
+                await ctx.send(f"Time For: {str(source)} !")
+            finally:
+                await ctx.message.add_reaction("⏯")
 
     
 
