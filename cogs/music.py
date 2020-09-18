@@ -318,17 +318,23 @@ class Music(commands.Cog):
     @commands.command(name="stop",aliases=["ruk","s","band"])
     async def _stop(self, ctx: commands.Context):
         ctx.voice_state.songs.clear()
-        if not ctx.voice_state.is_playing:
+
+        if ctx.voice_state.is_playing:
             ctx.voice_state.voice.stop()
-            await ctx.message.add_reaction('⏹')    
+            await ctx.message.add_reaction('⏹')  
 
     @commands.command(name="pause")
     async def _pause(self, ctx: commands.Context):
-        if not ctx.voice.is_playing and ctx.voice_state.voice.is_playing():
+        if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
             ctx.voice_state.voice.pause()
             await ctx.message.add_reaction("⏸")
     
-    
+    @commands.command(name="resume")
+    async def _resume(self, ctx: commands.Context):
+        if ctx.voice_state.voice.is_paused():
+            ctx.voice_state.voice.resume()
+            await ctx.message.add_reaction("▶")
+
 
 def setup(elvis):
     elvis.add_cog(Music(elvis))
