@@ -279,8 +279,6 @@ class Music(commands.Cog):
             destination = ctx.author.voice.channel
         except Exception:
             destination = None
-
-        
         if destination == None:
             await ctx.send("You'll have to join a voice channel before I can do that.")
             await ctx.message.add_reaction("🚫")
@@ -289,12 +287,16 @@ class Music(commands.Cog):
             if ctx.voice_state.voice:
                 await ctx.voice_state.voice.move_to(destination)
                 return
-
-            ctx.voice_state.voice = await destination.connect()
+            ctx.voice_state.voice = await destination.connect()    
     @commands.command(name="go", aliases=["nikal","leave","disconnect"])
     async def _leave(self, ctx: commands.Context):
         if not ctx.voice_state.voice:
+            await ctx.message.add_reaction("😥")
             return await ctx.send("I'm not connected to any voice channel!")
+
+        await ctx.voice_state.stop()
+        await ctx.message.add_reaction("😓")
+        del self.voice_states[ctx.guild.id]
 
     @commands.command()
     async def deaf(self, ctx):
