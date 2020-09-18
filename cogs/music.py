@@ -322,5 +322,13 @@ class Music(commands.Cog):
             ctx.voice_state.voice.stop()
             await ctx.message.add_reaction('⏹')    
 
+    @commands.command(name="pause")
+    async def _pause(self, ctx: commands.Context):
+        if not ctx.voice.is_playing and ctx.voice_state.voice.is_playing():
+            ctx.voice_state.voice.pause()
+            await ctx.message.add_reaction("⏸")
+    
+    
+
 def setup(elvis):
     elvis.add_cog(Music(elvis))
