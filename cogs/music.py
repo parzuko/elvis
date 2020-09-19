@@ -373,6 +373,18 @@ class Music(commands.Cog):
             ))
         embed.set_footer(text=f"Viewing page {page}/{pages}")
         await ctx.send(embed=embed)
+        await ctx.send("To remove a song just say `remove [song number]`")
+    
+    @commands.command(name="remove",aliases=["delete", "hata"])
+    async def _remove(self, ctx: commands.Context, index: int):
+        if len(ctx.voice_state.songs) == 0:
+            return await ctx.send("No songs in queue")
+        try:
+            ctx.voice_state.songs.remove(index - 1)
+            await ctx.message.add_reaction("🚮")
+        except Exception:
+            await ctx.send(f"There aren't {index} songs in queue..")
+
 
 def setup(elvis):
     elvis.add_cog(Music(elvis))

@@ -1,5 +1,4 @@
 import discord
-import sys, os
 from discord.ext import commands
 
 
@@ -30,7 +29,7 @@ class Basic(commands.Cog):
     @commands.command(name = "owner", aliases = ["o", "Owner", "king", "creator", "maalik"])
     async def _who_owner(self, ctx):
         owner = str(ctx.message.guild.owner)[:-5]
-        await ctx.send(f"`{owner}` is the creator of this aweomse server!")
+        await ctx.send(f"`{owner}` is the creator of this awesome server!")
         await ctx.message.add_reaction("👑")
 
 def setup(elvis):
