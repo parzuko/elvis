@@ -65,11 +65,11 @@ class Weather:
         return final_list
 
 class GiveWeather(commands.Cog):
-    def __init__(self, elvis):
+    def __init__(self, elvis: commands.Bot):
         self.elvis = elvis
 
     @commands.command(name = "weather", aliases = ["w", "temp", "mausam"])
-    async def _weather(self, ctx, *, location=""):
+    async def _weather(self, ctx: commands.Context, *, location: str = ""):
         """Gives weather of input city."""
 
         if location == "":

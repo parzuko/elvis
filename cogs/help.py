@@ -2,11 +2,11 @@ import discord
 from discord.ext import commands
 
 class Help(commands.Cog):
-    def __init__(self, elvis):
+    def __init__(self, elvis: commands.Bot):
         self.elvis = elvis
     
     @commands.command(name = "help")
-    async def _help(self, ctx):
+    async def _help(self, ctx : commands.Context):
         embed = discord.Embed(
             color = discord.Color.from_rgb(244,66,146)
         )
@@ -19,7 +19,7 @@ class Help(commands.Cog):
         await ctx.send(embed=embed)
     
     @commands.command(name = "help-basic", aliases = ["helpbasic", "hb", "helpb"])
-    async def _help_basic(self, ctx):
+    async def _help_basic(self, ctx: commands.Context):
         embed = discord.Embed(
             title = "Basic Commands",
             color = discord.Color.from_rgb(244,66,146)
@@ -30,7 +30,7 @@ class Help(commands.Cog):
         await ctx.send(embed=embed)
     
     @commands.command(name = "help-weather", aliases = ["helpweather", "hw", "helpw"])
-    async def _help_weather(self, ctx):
+    async def _help_weather(self, ctx: commands.Context):
         embed = discord.Embed(
             title = "Weather Command",
             color = discord.Color.from_rgb(244,66,146)
