@@ -300,9 +300,14 @@ class Music(commands.Cog):
 
     @commands.command(name="play",aliases=["baja", "p"])
     async def _play(self, ctx: commands.Context, *, search ):
-        if ctx.author.voice.channel == None:
+        try: 
+            if ctx.author.voice.channel == None:
+                await ctx.send("You'll have to join a voice channel before I can do that.")
+                return await ctx.message.add_reaction("🚫")
+        except Exception: 
             await ctx.send("You'll have to join a voice channel before I can do that.")
             return await ctx.message.add_reaction("🚫")
+        
         if not ctx.voice_state.voice:
             await ctx.invoke(self._join)
         
@@ -394,6 +399,13 @@ class Music(commands.Cog):
             return await ctx.send("Nothing to randomize!")
         ctx.voice_state.songs.shuffle()
         await ctx.message.add_reaction("🔀")
+    
+    @commands.command(name="loop", aliases=["phirse", "l", "again"])
+    async def _loop(self, ctx: commands.Context):
+        if not ctx.voice_state.is_playing:
+            return await ctx.send("No song is playing right now..")
+        ctx.voice_state.loop = not ctx.voice_state.loop
+        await ctx.message.add_reaction("🔂")
 
 def setup(elvis):
     elvis.add_cog(Music(elvis))
