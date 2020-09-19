@@ -8,6 +8,169 @@ import random
 from discord.ext import commands
 from async_timeout import timeout
 
+class Music(commands.Cog):
+    def __init__(self, elvis: commands.Bot):
+        self.elvis = elvis
+        self.voice_states = {}
+
+    def get_voice_state(self, ctx: commands.Context):
+        state = self.voice_states.get(ctx.guild.id)
+        if not state:
+            state = VoiceState(self.elvis, ctx)
+            self.voice_states[ctx.guild.id] = state
+        
+        return state
+
+    def cog_unload(self):
+        for state in self.voice_states.values():
+            self.elvis.loop.create_task(state.stop())
+
+    def cog_check(self, ctx: commands.Context):
+        if not ctx.guild:
+            raise commands.NoPrivateMessage("This command can't be used in DM channels.")
+
+        return True
+
+    async def cog_before_invoke(self, ctx: commands.Context):
+        ctx.voice_state = self.get_voice_state(ctx)
+
+    async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
+        await ctx.send(f"An error occurred: {str(error)}")
+
+    @commands.command(name="join", aliases=["j","aaja",])
+    async def _join(self, ctx: commands.Context):
+        try:
+            destination = ctx.author.voice.channel
+        except Exception:
+            destination = None
+        if destination == None:
+            await ctx.send("You'll have to join a voice channel before I can do that.")
+            await ctx.message.add_reaction("🚫")
+        else:
+            await ctx.message.add_reaction("🎸")
+            if ctx.voice_state.voice:
+                await ctx.voice_state.voice.move_to(destination)
+                return
+            ctx.voice_state.voice = await destination.connect()    
+    @commands.command(name="go", aliases=["nikal","leave","disconnect","g"])
+    async def _leave(self, ctx: commands.Context):
+        if not ctx.voice_state.voice:
+            await ctx.message.add_reaction("😥")
+            return await ctx.send("I'm not connected to any voice channel!")
+
+        await ctx.voice_state.stop()
+        await ctx.message.add_reaction("😓")
+        del self.voice_states[ctx.guild.id]
+
+    @commands.command(name="play",aliases=["baja", "p"])
+    async def _play(self, ctx: commands.Context, *, search ):
+        try: 
+            if ctx.author.voice.channel == None:
+                await ctx.send("You'll have to join a voice channel before I can do that.")
+                return await ctx.message.add_reaction("🚫")
+        except Exception: 
+            await ctx.send("You'll have to join a voice channel before I can do that.")
+            return await ctx.message.add_reaction("🚫")
+        
+        if not ctx.voice_state.voice:
+            await ctx.invoke(self._join)
+        
+        await ctx.send("Just getting the record..")
+        async with ctx.typing():
+            try:
+                source = await YTDLSource.create_source(ctx, search,loop=self.elvis.loop)
+            except Exception:
+                await ctx.send("There was a problem 🤔 try again ?")
+            else:
+                song = Song(source)
+                await ctx.voice_state.songs.put(song)
+                if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
+                    await ctx.send(f"Queued: {str(source)} ! Use `.skip` to skip the current track.")
+                else:
+                    await ctx.send(f"Time For: {str(source)} !")
+            finally:
+                await ctx.message.add_reaction("⏯")
+
+    @commands.command(name="stop",aliases=["s","band"])
+    async def _stop(self, ctx: commands.Context):
+        ctx.voice_state.songs.clear()
+
+        if ctx.voice_state.is_playing:
+            ctx.voice_state.voice.stop()
+            await ctx.message.add_reaction("⏹")  
+
+    @commands.command(name="pause", aliases = ["ruk"])
+    async def _pause(self, ctx: commands.Context):
+        if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
+            ctx.voice_state.voice.pause()
+            await ctx.message.add_reaction("⏸")
+        else:
+            await ctx.send("But there's nothing to pause.")
+    
+    @commands.command(name="resume")
+    async def _resume(self, ctx: commands.Context):
+        try:
+            if ctx.voice_state.voice.is_paused():
+                ctx.voice_state.voice.resume()
+                await ctx.message.add_reaction("▶")
+        except Exception:
+            await ctx.send("But there's nothing to resume playing.")
+
+    @commands.command(name='skip', aliases=["agla"])
+    async def _skip(self, ctx: commands.Context):
+        if not ctx.voice_state.is_playing:
+            return await ctx.send("Not playing any music right now...")
+        else:
+            await ctx.message.add_reaction("⏭")
+            ctx.voice_state.skip()
+    
+    @commands.command(name='queue',aliases=["q"])
+    async def _queue(self, ctx: commands.Context, *, page: int = 1):
+        if len(ctx.voice_state.songs) == 0:
+            return await ctx.send("No records lined up! Use `.play` to start!")
+
+        items_per_page = 10
+        pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
+
+        start = (page - 1) * items_per_page
+        end = start + items_per_page
+
+        queue = ""
+        for i, song in enumerate(ctx.voice_state.songs[start:end], start=start):
+            queue += f"`{i + 1}.` [**{song.source.title}**]({song.source.url})\n"
+
+        embed = (discord.Embed(
+            description=f"There are **{len(ctx.voice_state.songs)}** tracks in queue:\n\n{queue}",
+            color = discord.Color.from_rgb(244,66,146)
+            ))
+        embed.set_footer(text=f"Viewing page {page}/{pages}")
+        await ctx.send(embed=embed)
+        await ctx.send("To remove a song just say `remove [song number]`")
+    
+    @commands.command(name="remove",aliases=["delete", "hata"])
+    async def _remove(self, ctx: commands.Context, index: int):
+        if len(ctx.voice_state.songs) == 0:
+            return await ctx.send("No songs in queue")
+        try:
+            ctx.voice_state.songs.remove(index - 1)
+            await ctx.message.add_reaction("🚮")
+        except Exception:
+            await ctx.send(f"There aren't {index} songs in queue..")
+
+    @commands.command(name="shuffle",aliases=["randomize","mix"])
+    async def _shuffle(self, ctx: commands.Context):
+        if len(ctx.voice_state.songs) == 0:
+            return await ctx.send("Nothing to randomize!")
+        ctx.voice_state.songs.shuffle()
+        await ctx.message.add_reaction("🔀")
+    
+    @commands.command(name="current", aliases=["abhi", "now", "what"])
+    async def _current(self, ctx: commands.Context):
+        await ctx.send(embed=ctx.voice_state.current.create_embed())
+
+
+
+
 # Incase of YTDL OR FFFMPEGG Erros
 youtube_dl.utils.bug_reports_message = lambda: ''
 
@@ -244,165 +407,6 @@ class VoiceState:
             await self.voice.disconnect()
             self.voice = None
 
-class Music(commands.Cog):
-    def __init__(self, elvis: commands.Bot):
-        self.elvis = elvis
-        self.voice_states = {}
-
-    def get_voice_state(self, ctx: commands.Context):
-        state = self.voice_states.get(ctx.guild.id)
-        if not state:
-            state = VoiceState(self.elvis, ctx)
-            self.voice_states[ctx.guild.id] = state
-        
-        return state
-
-    def cog_unload(self):
-        for state in self.voice_states.values():
-            self.elvis.loop.create_task(state.stop())
-
-    def cog_check(self, ctx: commands.Context):
-        if not ctx.guild:
-            raise commands.NoPrivateMessage("This command can't be used in DM channels.")
-
-        return True
-
-    async def cog_before_invoke(self, ctx: commands.Context):
-        ctx.voice_state = self.get_voice_state(ctx)
-
-    async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
-        await ctx.send(f"An error occurred: {str(error)}")
-
-    @commands.command(name="join", aliases=["j","aaja",])
-    async def _join(self, ctx: commands.Context):
-        try:
-            destination = ctx.author.voice.channel
-        except Exception:
-            destination = None
-        if destination == None:
-            await ctx.send("You'll have to join a voice channel before I can do that.")
-            await ctx.message.add_reaction("🚫")
-        else:
-            await ctx.message.add_reaction("🎸")
-            if ctx.voice_state.voice:
-                await ctx.voice_state.voice.move_to(destination)
-                return
-            ctx.voice_state.voice = await destination.connect()    
-    @commands.command(name="go", aliases=["nikal","leave","disconnect","g"])
-    async def _leave(self, ctx: commands.Context):
-        if not ctx.voice_state.voice:
-            await ctx.message.add_reaction("😥")
-            return await ctx.send("I'm not connected to any voice channel!")
-
-        await ctx.voice_state.stop()
-        await ctx.message.add_reaction("😓")
-        del self.voice_states[ctx.guild.id]
-
-    @commands.command(name="play",aliases=["baja", "p"])
-    async def _play(self, ctx: commands.Context, *, search ):
-        try: 
-            if ctx.author.voice.channel == None:
-                await ctx.send("You'll have to join a voice channel before I can do that.")
-                return await ctx.message.add_reaction("🚫")
-        except Exception: 
-            await ctx.send("You'll have to join a voice channel before I can do that.")
-            return await ctx.message.add_reaction("🚫")
-        
-        if not ctx.voice_state.voice:
-            await ctx.invoke(self._join)
-        
-        await ctx.send("Just getting the record..")
-        async with ctx.typing():
-            try:
-                source = await YTDLSource.create_source(ctx, search,loop=self.elvis.loop)
-            except Exception:
-                await ctx.send("There was a problem 🤔 try again ?")
-            else:
-                song = Song(source)
-                await ctx.voice_state.songs.put(song)
-                if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
-                    await ctx.send(f"Queued: {str(source)} ! Use `.skip` to skip the current track.")
-                else:
-                    await ctx.send(f"Time For: {str(source)} !")
-            finally:
-                await ctx.message.add_reaction("⏯")
-
-    @commands.command(name="stop",aliases=["s","band"])
-    async def _stop(self, ctx: commands.Context):
-        ctx.voice_state.songs.clear()
-
-        if ctx.voice_state.is_playing:
-            ctx.voice_state.voice.stop()
-            await ctx.message.add_reaction("⏹")  
-
-    @commands.command(name="pause", aliases = ["ruk"])
-    async def _pause(self, ctx: commands.Context):
-        if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
-            ctx.voice_state.voice.pause()
-            await ctx.message.add_reaction("⏸")
-        else:
-            await ctx.send("But there's nothing to pause.")
-    
-    @commands.command(name="resume")
-    async def _resume(self, ctx: commands.Context):
-        try:
-            if ctx.voice_state.voice.is_paused():
-                ctx.voice_state.voice.resume()
-                await ctx.message.add_reaction("▶")
-        except Exception:
-            await ctx.send("But there's nothing to resume playing.")
-
-    @commands.command(name='skip', aliases=["agla"])
-    async def _skip(self, ctx: commands.Context):
-        if not ctx.voice_state.is_playing:
-            return await ctx.send("Not playing any music right now...")
-        else:
-            await ctx.message.add_reaction("⏭")
-            ctx.voice_state.skip()
-    
-    @commands.command(name='queue',aliases=["q"])
-    async def _queue(self, ctx: commands.Context, *, page: int = 1):
-        if len(ctx.voice_state.songs) == 0:
-            return await ctx.send("No records lined up! Use `.play` to start!")
-
-        items_per_page = 10
-        pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
-
-        start = (page - 1) * items_per_page
-        end = start + items_per_page
-
-        queue = ""
-        for i, song in enumerate(ctx.voice_state.songs[start:end], start=start):
-            queue += f"`{i + 1}.` [**{song.source.title}**]({song.source.url})\n"
-
-        embed = (discord.Embed(
-            description=f"There are **{len(ctx.voice_state.songs)}** tracks in queue:\n\n{queue}",
-            color = discord.Color.from_rgb(244,66,146)
-            ))
-        embed.set_footer(text=f"Viewing page {page}/{pages}")
-        await ctx.send(embed=embed)
-        await ctx.send("To remove a song just say `remove [song number]`")
-    
-    @commands.command(name="remove",aliases=["delete", "hata"])
-    async def _remove(self, ctx: commands.Context, index: int):
-        if len(ctx.voice_state.songs) == 0:
-            return await ctx.send("No songs in queue")
-        try:
-            ctx.voice_state.songs.remove(index - 1)
-            await ctx.message.add_reaction("🚮")
-        except Exception:
-            await ctx.send(f"There aren't {index} songs in queue..")
-
-    @commands.command(name="shuffle",aliases=["randomize","mix"])
-    async def _shuffle(self, ctx: commands.Context):
-        if len(ctx.voice_state.songs) == 0:
-            return await ctx.send("Nothing to randomize!")
-        ctx.voice_state.songs.shuffle()
-        await ctx.message.add_reaction("🔀")
-    
-    @commands.command(name="current", aliases=["abhi", "now", "what"])
-    async def _current(self, ctx: commands.Context):
-        await ctx.send(embed=ctx.voice_state.current.create_embed())
 
 def setup(elvis):
     elvis.add_cog(Music(elvis))
