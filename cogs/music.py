@@ -300,6 +300,9 @@ class Music(commands.Cog):
 
     @commands.command(name="play",aliases=["baja", "p"])
     async def _play(self, ctx: commands.Context, *, search ):
+        if ctx.author.voice.channel == None:
+            await ctx.send("You'll have to join a voice channel before I can do that.")
+            return await ctx.message.add_reaction("🚫")
         if not ctx.voice_state.voice:
             await ctx.invoke(self._join)
         
