@@ -64,7 +64,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         self.stream_url = data.get('url')
 
     def __str__(self):
-        return f"**{self.title}** by **{self.uploader}**"
+        return f"**{self.title}**"
 
     @classmethod
     async def create_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.BaseEventLoop = None):
@@ -303,6 +303,7 @@ class Music(commands.Cog):
         if not ctx.voice_state.voice:
             await ctx.invoke(self._join)
         
+        await ctx.send("Just getting the record..")
         async with ctx.typing():
             try:
                 source = await YTDLSource.create_source(ctx, search,loop=self.elvis.loop)
@@ -311,11 +312,14 @@ class Music(commands.Cog):
             else:
                 song = Song(source)
                 await ctx.voice_state.songs.put(song)
-                await ctx.send(f"Time For: {str(source)} !")
+                if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
+                    await ctx.send(f"Queued: {str(source)} ! Use `.skip` to skip the current track.")
+                else:
+                    await ctx.send(f"Time For: {str(source)} !")
             finally:
                 await ctx.message.add_reaction("⏯")
 
-    @commands.command(name="stop",aliases=["ruk","s","band"])
+    @commands.command(name="stop",aliases=["s","band"])
     async def _stop(self, ctx: commands.Context):
         ctx.voice_state.songs.clear()
 
@@ -323,17 +327,22 @@ class Music(commands.Cog):
             ctx.voice_state.voice.stop()
             await ctx.message.add_reaction('⏹')  
 
-    @commands.command(name="pause")
+    @commands.command(name="pause", aliases = ["ruk"])
     async def _pause(self, ctx: commands.Context):
         if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
             ctx.voice_state.voice.pause()
             await ctx.message.add_reaction("⏸")
+        else:
+            await ctx.send("But there's nothing to pause.")
     
     @commands.command(name="resume")
     async def _resume(self, ctx: commands.Context):
-        if ctx.voice_state.voice.is_paused():
-            ctx.voice_state.voice.resume()
-            await ctx.message.add_reaction("▶")
+        try:
+            if ctx.voice_state.voice.is_paused():
+                ctx.voice_state.voice.resume()
+                await ctx.message.add_reaction("▶")
+        except Exception:
+            await ctx.send("But there's nothing to resume playing.")
 
 
 def setup(elvis):
