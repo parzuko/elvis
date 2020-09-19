@@ -400,12 +400,9 @@ class Music(commands.Cog):
         ctx.voice_state.songs.shuffle()
         await ctx.message.add_reaction("🔀")
     
-    @commands.command(name="loop", aliases=["phirse", "l", "again"])
-    async def _loop(self, ctx: commands.Context):
-        if not ctx.voice_state.is_playing:
-            return await ctx.send("No song is playing right now..")
-        ctx.voice_state.loop = not ctx.voice_state.loop
-        await ctx.message.add_reaction("🔂")
+    @commands.command(name="current", aliases=["abhi", "now", "what"])
+    async def _current(self, ctx: commands.Context):
+        await ctx.send(embed=ctx.voice_state.current.create_embed())
 
 def setup(elvis):
     elvis.add_cog(Music(elvis))
