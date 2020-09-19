@@ -308,7 +308,7 @@ class Music(commands.Cog):
             try:
                 source = await YTDLSource.create_source(ctx, search,loop=self.elvis.loop)
             except Exception:
-                await ctx.send("There was a problem 🤔. Try again ?")
+                await ctx.send("There was a problem 🤔 try again ?")
             else:
                 song = Song(source)
                 await ctx.voice_state.songs.put(song)
@@ -325,7 +325,7 @@ class Music(commands.Cog):
 
         if ctx.voice_state.is_playing:
             ctx.voice_state.voice.stop()
-            await ctx.message.add_reaction('⏹')  
+            await ctx.message.add_reaction("⏹")  
 
     @commands.command(name="pause", aliases = ["ruk"])
     async def _pause(self, ctx: commands.Context):
@@ -344,14 +344,35 @@ class Music(commands.Cog):
         except Exception:
             await ctx.send("But there's nothing to resume playing.")
 
-    @commands.command(name='skip')
+    @commands.command(name='skip', aliases=["agla"])
     async def _skip(self, ctx: commands.Context):
         if not ctx.voice_state.is_playing:
-            return await ctx.send('Not playing any music right now...')
+            return await ctx.send("Not playing any music right now...")
         else:
-            await ctx.message.add_reaction('⏭')
+            await ctx.message.add_reaction("⏭")
             ctx.voice_state.skip()
-        
+    
+    @commands.command(name='queue',aliases=["q"])
+    async def _queue(self, ctx: commands.Context, *, page: int = 1):
+        if len(ctx.voice_state.songs) == 0:
+            return await ctx.send("No records lined up! Use `.play` to start!")
+
+        items_per_page = 10
+        pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
+
+        start = (page - 1) * items_per_page
+        end = start + items_per_page
+
+        queue = ""
+        for i, song in enumerate(ctx.voice_state.songs[start:end], start=start):
+            queue += f"`{i + 1}.` [**{song.source.title}**]({song.source.url})\n"
+
+        embed = (discord.Embed(
+            description=f"There are **{len(ctx.voice_state.songs)}** tracks in queue:\n\n{queue}",
+            color = discord.Color.from_rgb(244,66,146)
+            ))
+        embed.set_footer(text=f"Viewing page {page}/{pages}")
+        await ctx.send(embed=embed)
 
 def setup(elvis):
     elvis.add_cog(Music(elvis))
