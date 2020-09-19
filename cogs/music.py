@@ -166,10 +166,10 @@ class Music(commands.Cog):
     
     @commands.command(name="current", aliases=["abhi", "now", "what"])
     async def _current(self, ctx: commands.Context):
-        await ctx.send(embed=ctx.voice_state.current.create_embed())
-
-
-
+        try:
+            await ctx.send(embed=ctx.voice_state.current.create_embed())
+        except Exception:
+            await ctx.send("Nothing playing at the moment!")
 
 # Incase of YTDL OR FFFMPEGG Erros
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -287,8 +287,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
             duration.append(f"{seconds} seconds")
 
         return ', '.join(duration)
-
-
+    
+    
 class Song:
     __slots__ = ("source", "requester")
 
