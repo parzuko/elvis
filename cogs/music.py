@@ -344,6 +344,14 @@ class Music(commands.Cog):
         except Exception:
             await ctx.send("But there's nothing to resume playing.")
 
+    @commands.command(name='skip')
+    async def _skip(self, ctx: commands.Context):
+        if not ctx.voice_state.is_playing:
+            return await ctx.send('Not playing any music right now...')
+        else:
+            await ctx.message.add_reaction('⏭')
+            ctx.voice_state.skip()
+        
 
 def setup(elvis):
     elvis.add_cog(Music(elvis))
