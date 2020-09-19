@@ -25,7 +25,7 @@ class Help(commands.Cog):
             color = discord.Color.from_rgb(244,66,146)
         )
         embed.add_field(name = "`.elvis`", value = "Elvis says hi.", inline = False)
-        embed.add_field(name = "`.owner`", value = "Responds with name of the owner of the guild.", inline = False)
+        embed.add_field(name = "`.owner`", value = "Elvis responds with name of the owner of the guild.", inline = False)
         embed.add_field(name = "`.clear [number]`", value = "Owner can delete input number of messages.", inline = False)
         await ctx.send(embed=embed)
     
@@ -35,9 +35,27 @@ class Help(commands.Cog):
             title = "Weather Command",
             color = discord.Color.from_rgb(244,66,146)
         )
-        embed.add_field(name = "`.weather [city]`", value = "Returns weather of the input city.", inline = False)
+        embed.add_field(name = "`.weather [city]`", value = "Elivs returns weather of the input city.", inline = False)
         await ctx.send(embed=embed)
     
+    @commands.command(name = "help-music", aliases = ["helpmusic", "hm", "helpm"])
+    async def _help_music(self, ctx: commands.Context):
+        embed = discord.Embed(
+            title = "Music Commands",
+            color = discord.Color.from_rgb(244,66,146)
+        )
+        embed.add_field(name = "`.join`", value = "Elvis joins your voice channel.", inline = False)
+        embed.add_field(name = "`.go`", value = "Elvis leaves voice channel.", inline = False)
+        embed.add_field(name = "`.play [song title]`", value = "Elvis plays requested song.", inline = False)
+        embed.add_field(name = "`.stop`", value = "Elvis terminates entire queue of songs", inline = False)
+        embed.add_field(name = "`.pause`", value = "Elvis temporarily stops the record", inline = False)
+        embed.add_field(name = "`.resume`", value = "Elvis resumes the record where you left off.", inline = False)
+        embed.add_field(name = "`.skip`", value = "Elvis skips the current playing song.", inline = False)
+        embed.add_field(name = "`.queue`", value = "Elvis displays all songs up next.", inline = False)
+        embed.add_field(name = "`.remove [song number]`", value = "Elvis removes song from queue.", inline = False)
+        embed.add_field(name = "`.current`", value = "Elvis displays whats currently being played.", inline = False)
+        embed.add_field(name = "`.shuffle `", value = "Elvis shuffles your queue of songs.", inline = False)
+        await ctx.send(embed=embed)
     
 
 def setup(elvis):
