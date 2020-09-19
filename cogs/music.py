@@ -388,6 +388,12 @@ class Music(commands.Cog):
         except Exception:
             await ctx.send(f"There aren't {index} songs in queue..")
 
+    @commands.command(name="shuffle",aliases=["randomize","mix"])
+    async def _shuffle(self, ctx: commands.Context):
+        if len(ctx.voice_state.songs) == 0:
+            return await ctx.send("Nothing to randomize!")
+        ctx.voice_state.songs.shuffle()
+        await ctx.message.add_reaction("🔀")
 
 def setup(elvis):
     elvis.add_cog(Music(elvis))
