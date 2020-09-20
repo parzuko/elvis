@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e790a3286f72fb67004a0e0fcd809fed8cfbb9e6380875c097e8946847703e42"
+            "sha256": "a695bb314ab3c242111fa1bbb1414aa4eb51573122725c61e5c4f67295ee0865"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -111,6 +111,13 @@
             "markers": "python_version >= '3.5'",
             "version": "==4.7.6"
         },
+        "mysql.connector": {
+            "hashes": [
+                "sha256:1733e6ce52a049243de3264f1fbc22a852cb35458c4ad739ba88189285efdf32"
+            ],
+            "index": "pypi",
+            "version": "==2.2.9"
+        },
         "requests": {
             "hashes": [
                 "sha256:b3559a131db72c33ee969480840fff4bb6dd111de7dd27c8ee1f820f4f00231b",
@@ -152,11 +159,11 @@
         },
         "youtube-dl": {
             "hashes": [
-                "sha256:118094942d762287db39664c4e8198abcdde68581a2214e96d1ec58f2753bd82",
-                "sha256:fdd7e328c6f23e83f331490293dc8fb4d4ca07eaf22b895d51021541abcc4236"
+                "sha256:012de159061570a6107e2da9a24d9ce628f045604471192f4b66236a6915a1f8",
+                "sha256:67fb9bfa30f5b8f06227c478a8a6ed04af1f97ad4e81dd7e2ce518df3e275391"
             ],
             "index": "pypi",
-            "version": "==2020.9.14"
+            "version": "==2020.9.20"
         }
     },
     "develop": {}

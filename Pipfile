@@ -9,6 +9,7 @@ verify_ssl = true
 discord = "*"
 requests = "*"
 youtube-dl = "*"
+"mysql.connector" = "*"
 
 [requires]
 python_version = "3.8"
