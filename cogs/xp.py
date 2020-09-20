@@ -25,16 +25,31 @@ class XPLeveling(commands.Cog):
 
         if new_xp < 20:
             current_level = "Aquintances"
-        elif new_xp > 20 and new_xp < 60:
+        elif new_xp >= 20 and new_xp < 60:
             current_level = "Friends"
-        elif new_xp > 60 and new_xp < 120:
+        elif new_xp >= 60 and new_xp < 120:
             current_level = "Best Friends"
-        elif new_xp > 120 and new_xp < 240:
+        elif new_xp >= 120 and new_xp < 240:
             current_level = "Homies"
-        elif new_xp > 240:
+        elif new_xp >= 240:
             current_level = "Brothers"
         return current_level    
     
+
+    @commands.command(name="friendship", aliases=["dosti", "xp"])
+    async def _xp(self, ctx):
+        user_id = ctx.message.author.id
+        name = ctx.message.author.name
+        cursor = mydb.cursor()
+        cursor.execute(f"SELECT friendship_level FROM xp WHERE client_id = {user_id}")
+        result = cursor.fetchall()
+        level = result[0][0]
+        embed = discord.Embed(
+                title = f"**{name} and Elvis are `{level}`.**",
+                color=discord.Color.teal(),
+        )
+        await ctx.send(embed=embed)
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.bot:
