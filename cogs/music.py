@@ -63,7 +63,7 @@ class Music(commands.Cog):
         del self.voice_states[ctx.guild.id]
 
     @commands.command(name="play",aliases=["baja", "p"])
-    async def _play(self, ctx: commands.Context, *, search ):
+    async def _play(self, ctx: commands.Context, *, search):
         try: 
             if ctx.author.voice.channel == None:
                 await ctx.send("You'll have to join a voice channel before I can do that.")
@@ -75,7 +75,7 @@ class Music(commands.Cog):
         if not ctx.voice_state.voice:
             await ctx.invoke(self._join)
         
-        await ctx.send("Just getting the record..")
+        await ctx.send("Just getting the record...")
         async with ctx.typing():
             try:
                 source = await YTDLSource.create_source(ctx, search,loop=self.elvis.loop)
