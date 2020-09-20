@@ -41,14 +41,21 @@ class XPLeveling(commands.Cog):
         user_id = ctx.message.author.id
         name = ctx.message.author.name
         cursor = mydb.cursor()
-        cursor.execute(f"SELECT friendship_level FROM xp WHERE client_id = {user_id}")
-        result = cursor.fetchall()
-        level = result[0][0]
-        embed = discord.Embed(
-                title = f"**{name} and Elvis are `{level}`.**",
-                color=discord.Color.teal(),
-        )
-        await ctx.send(embed=embed)
+        try:
+            cursor.execute(f"SELECT friendship_level FROM xp WHERE client_id = {user_id}")
+            result = cursor.fetchall()
+            level = result[0][0]
+            embed = discord.Embed(
+                    title = f"**{name} and Elvis are `{level}`.**",
+                    color=discord.Color.teal(),
+            )
+            await ctx.send(embed=embed)
+        except Exception:
+            embed = discord.Embed(
+                    title = f"**{name} and Elvis are meeting for the first time!**",
+                    color=discord.Color.from_rgb(244,66,146),
+            )
+            await ctx.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_message(self, message):
