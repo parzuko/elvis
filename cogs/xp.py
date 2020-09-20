@@ -13,12 +13,27 @@ mydb = mysql.connector.connect(
     auth_plugin = "mysql_native_password"
 )
 
-class XP_Leveling(commands.Cog):
+class XPLeveling(commands.Cog):
     def __init__(self, elvis):
         self.elvis = elvis
     
     def get_xp(self):
-        return random.randint(1,10)
+        return random.randint(1,5)
+
+    def get_level(self, new_xp):
+        current_level = ""
+
+        if new_xp < 20:
+            current_level = "Aquintances"
+        elif new_xp > 20 and new_xp < 60:
+            current_level = "Friends"
+        elif new_xp > 60 and new_xp < 120:
+            current_level = "Best Friends"
+        elif new_xp > 120 and new_xp < 240:
+            current_level = "Homies"
+        elif new_xp > 240:
+            current_level = "Brothers"
+        return current_level    
     
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -26,33 +41,38 @@ class XP_Leveling(commands.Cog):
             return
         if message.content[0] == ".":
             xp = self.get_xp()
-            print(f"{message.author.name} gets {xp}xp")
+            user_id = message.author.id
+            name = message.author.name
             cursor = mydb.cursor()
-            cursor.execute(f"SELECT user_xp, user_level FROM users WHERE client_id = {message.author.id}")
+            cursor.execute(f"SELECT user_xp, friendship_level FROM xp WHERE client_id = {user_id}")
             result = cursor.fetchall()
             if len(result) == 0:
-                print("addig to db")
-                cursor.execute(f"INSERT INTO users VALUES({message.author.id},{xp}, 1)")
+                cursor.execute(f"INSERT INTO xp VALUES({user_id},{xp},'Aquintances')") 
                 mydb.commit()
-                print("done")
+                embed = discord.Embed(
+                    title = f"**{name} and Elvis are now `Aquintances`**",
+                    color=discord.Color.teal()
+                )
+                await message.channel.send(embed=embed)
+
             else:
                 new_xp = result[0][0] + xp
                 current_level = result[0][1]
-
-
-                if new_xp < 20:
-                    current_level = 1
-                elif new_xp > 20 and new_xp < 40:
-                    current_level = 2
-                elif new_xp > 40 and new_xp < 60:
-                    current_level = 3
-
-
-
-                print(f"new = {new_xp}") 
-                print(f"new level = {current_level}")
-                cursor.execute(f"UPDATE users SET user_xp = {new_xp}, user_level = {current_level} WHERE client_id = {message.author.id}")
+                flag = False
+                new_level = self.get_level(new_xp)
+                if current_level != new_level:
+                    flag = True
+                    current_level = new_level
+                cursor.execute(f"UPDATE xp SET user_xp = {new_xp}, friendship_level = '{current_level}' WHERE client_id = {message.author.id}")
                 mydb.commit()
+                if flag:
+                    embed = discord.Embed(
+                        title = f"**{name} and Elvis are now `{current_level}`**",
+                        color=discord.Color.teal(),
+                    )
+                    await message.channel.send(embed=embed)
+
+
 
 def setup(elvis):
-    elvis.add_cog(XP_Leveling(elvis))
+    elvis.add_cog(XPLeveling(elvis))
