@@ -15,7 +15,6 @@ class Help(commands.Cog):
         embed.add_field(name = "Basic", value = "`.help-basic`")
         embed.add_field(name = "Weather", value = " `.help-weather`")
         embed.add_field(name = "Music", value = "`.help-music`")
-        embed.add_field(name = "Leveling", value = "`.help-xp`")
         await ctx.send(embed=embed)
     
     @commands.command(name = "help-basic", aliases = ["helpbasic", "hb", "helpb"])
