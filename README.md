@@ -7,7 +7,7 @@
 
 ```bash
 # Clone this repository.
-git clone https://github.com/parzuko/elvis/tree/xp-dbe
+git clone https://github.com/parzuko/elvis.git
 cd elvis
 
 # install pipenv
