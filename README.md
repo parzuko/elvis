@@ -5,7 +5,14 @@
 #### Elvis is a music + utility bot written in python using [discord.py](https://discordpy.readthedocs.io/en/latest/). Elvis comes with all traditional music commands and a few easter egg commands. Use Elvis as is, or set him up your way!
 
 
+## :computer: Installing Locally
+
 ```bash
+
+# install ffmpeg
+sudo apt update
+sudo apt install ffmpeg
+
 # Clone this repository.
 git clone https://github.com/parzuko/elvis.git
 cd elvis
@@ -16,8 +23,12 @@ pip install pipenv
 # Install dependencies
 pipenv install --ignore-pipfile
 
+# only for linux
+pipenv uninstall discord
+pipenv install discord.py[voice]
+
 # Run it locally
-python main.py
+pipenv run main.py
 ```
 
 ---
