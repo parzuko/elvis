@@ -4,7 +4,8 @@ September 2020
 @parzuko
 
 """
+from config import token_path
 
-# replace with your token location
-with open("C:\\Users\\jivan\\Desktop\\token.txt","r+") as token_file:
+
+with open(f"{token_path}","r+") as token_file:
     token = token_file.read()

@@ -30,14 +30,15 @@ icons = {
     "50d" : "💨"
 }
 
-
+# Path to your weather api token 
+weather_path = "C:\\Users\\jivan\\Desktop\\auth.txt"
 
 class Weather:
     def __init__(self, location):
         self.location = location
     
     def get_oauth(self):
-        with open("C:\\Users\\jivan\\Desktop\\auth.txt","r+") as auth_file:
+        with open(f"{weather_path}", "r+") as auth_file:
             auth = auth_file.read()
         return auth
 
