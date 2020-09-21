@@ -12,9 +12,7 @@ class Basic(commands.Cog):
     
     @commands.command(aliases = ["Elvis", "sun", "hello"], name = "elvis")
     async def _introduce(self, ctx : commands.Context):
-        """Elvis says hi."""
-
-        await ctx.send("Hi! I'm Elvis. Here to listen to all your needs 😁. Just type ' .help ' to learn about what I can do! ")
+        await ctx.send("Hi! I'm Elvis. Here to listen to all your needs 😁. Just type `.help` to learn about what I can do! ")
         await ctx.message.add_reaction("👋")
 
     @commands.command(name = "clear", aliases = ["saaf", "clean", "Clear", "c"])

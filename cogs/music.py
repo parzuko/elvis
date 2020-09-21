@@ -107,7 +107,7 @@ class Music(commands.Cog):
         else:
             await ctx.send("But there's nothing to pause.")
     
-    @commands.command(name="resume")
+    @commands.command(name="resume", aliases=["wapas"])
     async def _resume(self, ctx: commands.Context):
         try:
             if ctx.voice_state.voice.is_paused():
@@ -157,7 +157,7 @@ class Music(commands.Cog):
         except Exception:
             await ctx.send(f"There aren't {index} songs in queue..")
 
-    @commands.command(name="shuffle",aliases=["randomize","mix"])
+    @commands.command(name="shuffle",aliases=["randomize","mix", "khichdi"])
     async def _shuffle(self, ctx: commands.Context):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.send("Nothing to randomize!")

@@ -15,6 +15,7 @@ class Help(commands.Cog):
         embed.add_field(name = "Basic", value = "`.help-basic`")
         embed.add_field(name = "Weather", value = " `.help-weather`")
         embed.add_field(name = "Music", value = "`.help-music`")
+        embed.add_field(name = "??", value = "`.help-easter`")
         await ctx.send(embed=embed)
     
     @commands.command(name = "help-basic", aliases = ["helpbasic", "hb", "helpb"])
@@ -37,7 +38,7 @@ class Help(commands.Cog):
         embed.add_field(name = "`.weather [city]`", value = "Elivs returns weather of the input city.", inline = False)
         await ctx.send(embed=embed)
     
-    @commands.command(name = "help-music", aliases = ["helpmusic", "hm", "helpm"])
+    @commands.command(name = "help-music", aliases = ["helpmusic", "hm", "helpm", "music"])
     async def _help_music(self, ctx: commands.Context):
         embed = discord.Embed(
             title = "Music Commands",
@@ -54,6 +55,30 @@ class Help(commands.Cog):
         embed.add_field(name = "`.remove [song number]`", value = "Elvis removes song from queue.", inline = False)
         embed.add_field(name = "`.current`", value = "Elvis displays whats currently being played.", inline = False)
         embed.add_field(name = "`.shuffle `", value = "Elvis shuffles your queue of songs.", inline = False)
+        await ctx.send(embed=embed)
+    
+    
+    @commands.command(name = "help-easter", aliases = ["eastereggs", "eggs", "hh", "hindi",])
+    async def _help_music(self, ctx: commands.Context):
+        embed = discord.Embed(
+            title = "Easter Eggs!",
+            color = discord.Color.from_rgb(244,66,146)
+        )
+        embed.add_field(name = "`.sun`", value = "Elvis says hi.", inline = False)
+        embed.add_field(name = "`.saaf [number]`", value = "Elvis deletes input number of messages.", inline = False)
+        embed.add_field(name = "`.maalik`", value = "Elvis responds with name of the owner of the guild.", inline = False)
+        embed.add_field(name = "`.mausam [city]`", value = "Elivs returns weather of the input city.", inline = False)
+        embed.add_field(name = "`.aaja`", value = "Elvis joins your voice channel.", inline = False)
+        embed.add_field(name = "`.nikal`", value = "Elvis leaves voice channel.", inline = False)
+        embed.add_field(name = "`.baja[song title]`", value = "Elvis plays requested song.", inline = False)
+        embed.add_field(name = "`.band`", value = "Elvis terminates entire queue of songs", inline = False)
+        embed.add_field(name = "`.ruk`", value = "Elvis temporarily stops the record", inline = False)
+        embed.add_field(name = "`.wapas`", value = "Elvis resumes the record where you left off.", inline = False)
+        embed.add_field(name = "`.agla`", value = "Elvis skips the current playing song.", inline = False)
+        embed.add_field(name = "`.iskebaad`", value = "Elvis displays all songs up next.", inline = False)
+        embed.add_field(name = "`.hata [song number]`", value = "Elvis removes song from queue.", inline = False)
+        embed.add_field(name = "`.abhi`", value = "Elvis displays whats currently being played.", inline = False)
+        embed.add_field(name = "`.khichdi `", value = "Elvis shuffles your queue of songs.", inline = False)
         await ctx.send(embed=embed)
     
 
