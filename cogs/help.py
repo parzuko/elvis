@@ -29,7 +29,7 @@ class Help(commands.Cog):
     
     @commands.command(name = "help-elvis", aliases = ["jivansh", "parzuko"])
     async def _help_elvis(self, ctx: commands.Context):
-        desc = "Hey there I'm @[Parzuko](https://github.com/parzuko) also known as @[jivansh](https://github.com/parzuko) on most social platforms.\n Have a feature you'd like implemented? Get in touch. "
+        desc = "Hey there I'm @[Parzuko](https://github.com/parzuko) also known as @[jivansh](https://www.instagram.com/jivansh/) on most social platforms.\n Have a feature you'd like implemented? Get in touch. "
         embed = discord.Embed(
             title = "Who made Elvis?",
             color = discord.Color.from_rgb(244,66,146),
