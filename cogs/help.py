@@ -16,8 +16,19 @@ class Help(commands.Cog):
         embed.add_field(name = "Weather", value = " `.help-weather`")
         embed.add_field(name = "Music", value = "`.help-music`")
         embed.add_field(name = "??", value = "`.help-easter`")
+        embed.add_field(name = "Elvis", value = "`.help-elvis`")
         await ctx.send(embed=embed)
     
+    @commands.command(name = "help-elvis", aliases = ["jivansh", "parzuko"])
+    async def _help_elvis(self, ctx: commands.Context):
+        desc = "Hey there I'm @[Parzuko](https://github.com/parzuko) also known as @[jivansh](https://github.com/parzuko) on most social platforms.\n Have a feature you'd like implemented? Get in touch. "
+        embed = discord.Embed(
+            title = "Who made Elvis?",
+            color = discord.Color.from_rgb(244,66,146),
+            description = f"{desc}" 
+        )
+        await ctx.send(embed=embed)
+
     @commands.command(name = "help-basic", aliases = ["helpbasic", "hb", "helpb"])
     async def _help_basic(self, ctx: commands.Context):
         embed = discord.Embed(
@@ -59,7 +70,7 @@ class Help(commands.Cog):
     
     
     @commands.command(name = "help-easter", aliases = ["eastereggs", "eggs", "hh", "hindi",])
-    async def _help_music(self, ctx: commands.Context):
+    async def _help_easter(self, ctx: commands.Context):
         embed = discord.Embed(
             title = "Easter Eggs!",
             color = discord.Color.from_rgb(244,66,146)
