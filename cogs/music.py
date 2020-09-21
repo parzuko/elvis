@@ -1,3 +1,10 @@
+"""
+Created By Jivansh Sharma 
+September 2020
+@parzuko
+
+"""
+
 import discord
 import youtube_dl
 import asyncio
@@ -63,7 +70,7 @@ class Music(commands.Cog):
         del self.voice_states[ctx.guild.id]
 
     @commands.command(name="play",aliases=["baja", "p"])
-    async def _play(self, ctx: commands.Context, *, search ):
+    async def _play(self, ctx: commands.Context, *, search):
         try: 
             if ctx.author.voice.channel == None:
                 await ctx.send("You'll have to join a voice channel before I can do that.")
@@ -75,7 +82,7 @@ class Music(commands.Cog):
         if not ctx.voice_state.voice:
             await ctx.invoke(self._join)
         
-        await ctx.send("Just getting the record..")
+        await ctx.send("Just getting the record...")
         async with ctx.typing():
             try:
                 source = await YTDLSource.create_source(ctx, search,loop=self.elvis.loop)
@@ -107,7 +114,7 @@ class Music(commands.Cog):
         else:
             await ctx.send("But there's nothing to pause.")
     
-    @commands.command(name="resume")
+    @commands.command(name="resume", aliases=["wapas"])
     async def _resume(self, ctx: commands.Context):
         try:
             if ctx.voice_state.voice.is_paused():
@@ -157,7 +164,7 @@ class Music(commands.Cog):
         except Exception:
             await ctx.send(f"There aren't {index} songs in queue..")
 
-    @commands.command(name="shuffle",aliases=["randomize","mix"])
+    @commands.command(name="shuffle",aliases=["randomize","mix", "khichdi"])
     async def _shuffle(self, ctx: commands.Context):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.send("Nothing to randomize!")

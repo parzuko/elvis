@@ -1,3 +1,10 @@
+"""
+Created By Jivansh Sharma 
+September 2020
+@parzuko
+
+"""
+
 import discord
 import os 
 from get_token import token as TOKEN
