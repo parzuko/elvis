@@ -1,3 +1,11 @@
+"""
+Created By Jivansh Sharma 
+September 2020
+@parzuko
+
+"""
+
+
 import discord
 from discord.ext import commands
 
