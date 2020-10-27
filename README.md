@@ -13,8 +13,7 @@
 git clone https://github.com/parzuko/elvis.git
 cd elvis
 
-# Download Lavalink into same directory
-https://github.com/Frederikam/Lavalink/releases/download/3.3.2/Lavalink.jar
+#Must have Java 11+ installed on machine
 
 # Install pipenv
 pip install pipenv

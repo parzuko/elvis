@@ -1,6 +1,4 @@
 __pycache__
 cogs/__pycache__
 .env
-Lavalink.jar
 logs
-cogs/music.py
