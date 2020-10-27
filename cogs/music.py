@@ -19,6 +19,27 @@ class Music(commands.Cog):
 
         lavalink.add_event_hook(self.track_hook)
 
+    @commands.command(name="search", aliases=["s", "dhundh"])
+    async def _search(self, ctx, *, query):
+        try:
+            player = player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+            query = f"ytsearch:{query}"
+            results = await player.node.get_tracks(query)
+            tracks = results['tracks'][0:10]
+            i = 0
+            query_result = ""
+            for track in tracks:
+                i += 1
+                track_length = track["info"]["length"] / 60000
+                query_result = query_result + f'{i}) {track["info"]["title"]} - {track_length}\n'
+            await ctx.channel.send(f"```nim\n{query_result}```")
+
+            # def check(m):
+            #     return m.author.id == ctx.author.id
+
+        except Exception as e:
+            print(e)
+
     @commands.command(name="play", aliases=["p", "baja"])
     async def _play(self, ctx, *, query: str):
         """ Searches and plays a song from a given query. """
@@ -61,7 +82,7 @@ class Music(commands.Cog):
         else:
             track = results['tracks'][0]
             who = ctx.author.name
-            # print(f"track is {track}")
+            print(f"track is {track}")
             embed.title = 'Now Playing!'
             embed.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
             embed.add_field(name="Requested By", value = f"@{who}")
@@ -169,7 +190,7 @@ class Music(commands.Cog):
 
 
     @commands.command(name="remove", aliases=["hata"])
-    async def _remmove(self, ctx, *, number):
+    async def _remove(self, ctx, *, number):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         song_list = player.queue
         if len(song_list) == 0:
