@@ -159,6 +159,15 @@ class Music(commands.Cog):
             await player.skip()
             await ctx.message.add_reaction("⏭")
 
+    @commands.command(name="stop", aliases=["band"])
+    async def _stop(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        if player.is_playing :
+            player.queue.clear()
+            await player.stop()
+            return await ctx.message.add_reaction("⏹") 
+
+
     def cog_unload(self):
         """ Cog unload handler. This removes any event hooks that were registered. """
         self.bot.lavalink._event_hooks.clear()

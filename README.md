@@ -13,7 +13,8 @@
 git clone https://github.com/parzuko/elvis.git
 cd elvis
 
-#Must have Java 11+ installed on machine
+# Must have Java 11+ installed on machine
+java -jar Lavalink.jar
 
 # Install pipenv
 pip install pipenv
@@ -22,7 +23,9 @@ pip install pipenv
 pipenv install pipfile
 
 # Run it locally
-pipenv run main.py
+pipenv shell
+python3 main.py
+
 ```
 
 ---
