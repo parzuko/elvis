@@ -115,7 +115,7 @@ class Music(commands.Cog):
             await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
             return await ctx.message.add_reaction("🎸")
 
-    @commands.command(name='queue')
+    @commands.command(name='queue', aliases=["q"])
     async def queue(self, ctx, page: int = 1):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -172,9 +172,13 @@ class Music(commands.Cog):
     async def _remmove(self, ctx, *, number):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         song_list = player.queue
+        if len(song_list) == 0:
+            return await ctx.send("No songs in queue")
         index = int(number)  - 1 
+        if len(song_list) <= index:
+            return await ctx.send("That song doesn't exist!")
         song_list.pop(index)
-        await ctx.send("Success")
+        await ctx.message.add_reaction("🚮")
 
 
 
