@@ -19,8 +19,8 @@ class Music(commands.Cog):
 
         lavalink.add_event_hook(self.track_hook)
 
-    @commands.command(aliases=['p'])
-    async def play(self, ctx, *, query: str):
+    @commands.command(name="play", aliases=["p", "baja"])
+    async def _play(self, ctx, *, query: str):
         """ Searches and plays a song from a given query. """
         # Get the player for this guild from cache.
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
@@ -40,7 +40,7 @@ class Music(commands.Cog):
         if not results or not results['tracks']:
             return await ctx.send('Nothing found!')
 
-        embed = discord.Embed(color=discord.Color.blurple())
+        embed = discord.Embed(color= discord.Color.from_rgb(244,66,146))
 
         # Valid loadTypes are:
         #   TRACK_LOADED    - single video/direct URL)
@@ -59,9 +59,11 @@ class Music(commands.Cog):
             embed.description = f'{results["playlistInfo"]["name"]} - {len(tracks)} tracks'
         else:
             track = results['tracks'][0]
-            print(f"track is {track}")
-            embed.title = 'Track Enqueued'
+            who = ctx.author.name
+            # print(f"track is {track}")
+            embed.title = 'Now Playing!'
             embed.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
+            embed.add_field(name="Requested By", value = f"@{who}")
 
             # You can attach additional information to audiotracks through kwargs, however this involves
             # constructing the AudioTrack class yourself.
@@ -129,14 +131,25 @@ class Music(commands.Cog):
         for index, track in enumerate(player.queue[start:end], start=start):
             queue_list += f'`{index + 1}.` [**{track.title}**]({track.uri})\n'
 
-        embed = discord.Embed(colour=discord.Color.blurple(),
-                          description=f'**{len(player.queue)} tracks**\n\n{queue_list}')
+        embed = discord.Embed(colour=discord.Color.from_rgb(244,66,146),
+                          description=f'There are **{len(player.queue)} tracks** in queue:\n\n{queue_list}')
         embed.set_footer(text=f'Viewing page {page}/{pages}')
         await ctx.send(embed=embed)
+    
+    @commands.command(name="pause", aliases=["ruk"])
+    async def _pause(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        if player.paused == False:
+            await player.set_pause(True)
+            await ctx.message.add_reaction("⏸")
 
-
-
-
+    @commands.command(name="resume", aliases=["wapas"])
+    async def _resume(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        if player.paused == True:
+            await player.set_pause(False)
+            await ctx.message.add_reaction("▶")
+            
     def cog_unload(self):
         """ Cog unload handler. This removes any event hooks that were registered. """
         self.bot.lavalink._event_hooks.clear()
@@ -207,13 +220,14 @@ class Music(commands.Cog):
             # To save on resources, we can tell the bot to disconnect from the voicechannel.
             guild_id = int(event.player.guild_id)
             await self.connect_to(guild_id, None)
-
+    
     async def connect_to(self, guild_id: int, channel_id: str):
         """ Connects to the given voicechannel ID. A channel_id of `None` means disconnect. """
         ws = self.bot._connection._get_websocket(guild_id)
         await ws.voice_state(str(guild_id), channel_id)
         # The above looks dirty, we could alternatively use `bot.shards[shard_id].ws` but that assumes
         # the bot instance is an AutoShardedBot.
+
 
 def setup(bot):
     bot.add_cog(Music(bot))
