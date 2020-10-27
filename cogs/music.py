@@ -168,6 +168,16 @@ class Music(commands.Cog):
             return await ctx.message.add_reaction("⏹") 
 
 
+    @commands.command(name="remove", aliases=["hata"])
+    async def _remmove(self, ctx, *, number):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        song_list = player.queue
+        index = int(number)  - 1 
+        song_list.pop(index)
+        await ctx.send("Success")
+
+
+
     def cog_unload(self):
         """ Cog unload handler. This removes any event hooks that were registered. """
         self.bot.lavalink._event_hooks.clear()
