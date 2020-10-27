@@ -99,6 +99,19 @@ class Music(commands.Cog):
         await self.connect_to(ctx.guild.id, None)
         await ctx.message.add_reaction("😓")
 
+    @commands.command(name="join", aliases=["j", "aaja"])
+    async def _join(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        
+        if not ctx.author.voice:
+            await ctx.message.add_reaction("🚫")
+            return await ctx.send("You'll have to join a voice channel before I can do that.")
+
+        if player.is_connected:
+            player.store('channel', ctx.channel.id)
+            await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
+            return await ctx.message.add_reaction("🎸")
+
     @commands.command(name='queue')
     async def queue(self, ctx, page: int = 1):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
@@ -155,27 +168,32 @@ class Music(commands.Cog):
 
         # These are commands that require the bot to join a voicechannel (i.e. initiating playback).
         # Commands such as volume/skip etc don't require the bot to be in a voicechannel so don't need listing here.
-        should_connect = ctx.command.name in ('play',)
+        should_connect = ctx.command.name in ("play", "join")
 
         if not ctx.author.voice or not ctx.author.voice.channel:
             # Our cog_command_error handler catches this and sends it to the voicechannel.
             # Exceptions allow us to "short-circuit" command invocation via checks so the
             # execution state of the command goes no further.
-            raise commands.CommandInvokeError('Join a voicechannel first.')
+            await ctx.message.add_reaction("🚫")
+            raise commands.CommandInvokeError("You'll have to join a voice channel before I can do that.")
 
         if not player.is_connected:
             if not should_connect:
+                await ctx.message.add_reaction("🚫")
                 raise commands.CommandInvokeError('Not connected.')
 
             permissions = ctx.author.voice.channel.permissions_for(ctx.me)
 
             if not permissions.connect or not permissions.speak:  # Check user limit too?
+                await ctx.message.add_reaction("🚫")
                 raise commands.CommandInvokeError('I need the `CONNECT` and `SPEAK` permissions.')
 
             player.store('channel', ctx.channel.id)
             await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
+            await ctx.message.add_reaction("🎸")
         else:
             if int(player.channel_id) != ctx.author.voice.channel.id:
+                await ctx.message.add_reaction("🚫")
                 raise commands.CommandInvokeError('You need to be in my voicechannel.')
 
     async def track_hook(self, event):
