@@ -9,23 +9,18 @@
 
 ```bash
 
-# install ffmpeg
-sudo apt update
-sudo apt install ffmpeg
-
 # Clone this repository.
 git clone https://github.com/parzuko/elvis.git
 cd elvis
 
-# install pipenv
+# Download Lavalink into same directory
+https://github.com/Frederikam/Lavalink/releases/download/3.3.2/Lavalink.jar
+
+# Install pipenv
 pip install pipenv
 
 # Install dependencies
-pipenv install --ignore-pipfile
-
-# only for linux
-pipenv uninstall discord
-pipenv install discord.py[voice]
+pipenv install pipfile
 
 # Run it locally
 pipenv run main.py
