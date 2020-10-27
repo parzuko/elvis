@@ -8,6 +8,7 @@ September 2020
 import discord
 from discord.ext import commands
 import requests
+from get_token import weather_token
 
 icons = {
     "01d" : "🌞",
@@ -30,21 +31,14 @@ icons = {
     "50d" : "💨"
 }
 
-# Path to your weather api token 
-weather_path = "C:\\Users\\jivan\\Desktop\\auth.txt"
+
 
 class Weather:
     def __init__(self, location):
         self.location = location
     
-    def get_oauth(self):
-        with open(f"{weather_path}", "r+") as auth_file:
-            auth = auth_file.read()
-        return auth
-
-
     def get_info(self):
-        weather_key = self.get_oauth()
+        weather_key = weather_token
         url = 'https://api.openweathermap.org/data/2.5/weather'
         params = {'APPID': weather_key, "q": self.location, "units": 'metric'}
         response = requests.get(url, params = params)
@@ -79,15 +73,15 @@ class GiveWeather(commands.Cog):
             result = Weather(location)
             info_list = result.get_info() 
             if len(info_list) != 0:
-                weather = (discord.Embed(title='City',
+                embed = (discord.Embed(title='City',
                                     description=f'```{info_list[0]}```',
                                     color=discord.Color.from_rgb(244,66,146))                       
                         )
-                weather.add_field(name='Conditions', value=f"{info_list[1].capitalize()}")
-                weather.add_field(name='Temperature',value=f"{info_list[2]}°C") 
-                weather.add_field(name='Climate', value = f"{icons[info_list[3]]}")
+                embed.add_field(name='Conditions', value=f"{info_list[1].capitalize()}")
+                embed.add_field(name='Temperature',value=f"{info_list[2]}°C") 
+                embed.add_field(name='Climate', value = f"{icons[info_list[3]]}")
 
-                await ctx.send(embed=weather)
+                await ctx.send(embed=embed)
             else:
                 await ctx.send("I'm Having a bit of trouble 😅. I'm better at music tho!")
 
