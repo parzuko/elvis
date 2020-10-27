@@ -22,6 +22,7 @@ class Music(commands.Cog):
     @commands.command(name="play", aliases=["p", "baja"])
     async def _play(self, ctx, *, query: str):
         """ Searches and plays a song from a given query. """
+
         # Get the player for this guild from cache.
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         # Remove leading and trailing <>. <> may be used to suppress embedding links in Discord.
@@ -149,7 +150,15 @@ class Music(commands.Cog):
         if player.paused == True:
             await player.set_pause(False)
             await ctx.message.add_reaction("▶")
-            
+
+    
+    @commands.command(name="skip", aliases=["agla", "next"])
+    async def _skip(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        if player.is_playing:
+            await player.skip()
+            await ctx.message.add_reaction("⏭")
+
     def cog_unload(self):
         """ Cog unload handler. This removes any event hooks that were registered. """
         self.bot.lavalink._event_hooks.clear()
