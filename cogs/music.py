@@ -115,6 +115,10 @@ class Music(commands.Cog):
     @commands.command(name='queue')
     async def queue(self, ctx, page: int = 1):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+
+        if(len(player.queue) == 0):
+            return await ctx.send("No records lined up! Use `.play` to start!")
+
         items_per_page = 10
         pages = math.ceil(len(player.queue) / items_per_page)
 
