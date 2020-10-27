@@ -4,8 +4,9 @@ September 2020
 @parzuko
 
 """
-from config import token_path
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-
-with open(f"{token_path}","r+") as token_file:
-    token = token_file.read()
+token = os.getenv("TOKEN")
+weather_token = os.getenv("WEATHER")

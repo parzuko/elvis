@@ -10,6 +10,7 @@ discord = "*"
 requests = "*"
 youtube-dl = "*"
 "mysql.connector" = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"
