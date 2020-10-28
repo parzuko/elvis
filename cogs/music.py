@@ -30,12 +30,28 @@ class Music(commands.Cog):
             query_result = ""
             for track in tracks:
                 i += 1
-                track_length = track["info"]["length"] / 60000
+                track_length = track["info"]["length"]
+                track_length = self.convert_to_min_and_seconds(track_length)
                 query_result = query_result + f'{i}) {track["info"]["title"]} - {track_length}\n'
             await ctx.channel.send(f"```nim\n{query_result}```")
 
-            # def check(m):
-            #     return m.author.id == ctx.author.id
+            def check_if_sender_is_requester(reply):
+                return reply.author.id == ctx.author.id
+            
+            response = await self.bot.wait_for('message', check=check_if_sender_is_requester)
+            track = tracks[int(response.content)-1]
+            embed = discord.Embed(color= discord.Color.from_rgb(244,66,146))
+            who = ctx.author.name
+            print(f"track is {track}")
+            embed.title = 'Queued!'
+            embed.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
+            embed.add_field(name="Requested By", value = f"@{who}")
+
+            player.add(requester=ctx.author.id, track = track)
+            
+            await ctx.send(embed=embed)
+            if not player.is_playing:
+                await player.play()
 
         except Exception as e:
             print(e)
@@ -281,6 +297,10 @@ class Music(commands.Cog):
         # The above looks dirty, we could alternatively use `bot.shards[shard_id].ws` but that assumes
         # the bot instance is an AutoShardedBot.
 
+    def convert_to_min_and_seconds(self, milliseconds: int):
+        minutes = milliseconds // 60000
+        seconds = round(((milliseconds % 60000) // 1000), 0)
+        return f"{minutes}:{seconds}"
 
 def setup(bot):
     bot.add_cog(Music(bot))
