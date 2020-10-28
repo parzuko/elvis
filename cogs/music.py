@@ -3,6 +3,7 @@ import re
 import discord
 import lavalink
 from discord.ext import commands
+import random
 import math
 
 url_rx = re.compile(r'https?://(?:www\.)?.+')
@@ -228,6 +229,17 @@ class Music(commands.Cog):
             track_name = player.current.title
             await ctx.send(f"Wont repeat {track_name} anymore :)")
     
+
+    @commands.command(name="shuffle",aliases=["randomize","mix", "khichdi"])
+    async def _shuffle(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        if player.is_playing:
+            if len(player.queue) > 1 :
+                #player.shuffle = not player.shuffle
+                random.shuffle(player.queue)
+                await ctx.message.add_reaction("🔀")
+        else:
+            return await ctx.send("Nothing to randomize!")
 
     @commands.command(name="remove", aliases=["hata"])
     async def _remove(self, ctx, *, number):
