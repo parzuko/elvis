@@ -14,7 +14,7 @@ class Music(commands.Cog):
 
         if not hasattr(bot, 'lavalink'):  # This ensures the client isn't overwritten during cog reloads.
             bot.lavalink = lavalink.Client(bot.user.id)
-            bot.lavalink.add_node('127.0.0.1', 2333, 'youshallnotpass', 'eu', 'default-node')  # Host, Port, Password, Region, Name
+            bot.lavalink.add_node('127.0.0.1', 2333, 'youshallnotpass', 'as', 'default-node')  # Host, Port, Password, Region, Name
             bot.add_listener(bot.lavalink.voice_update_handler, 'on_socket_response')
 
         lavalink.add_event_hook(self.track_hook)
@@ -40,18 +40,9 @@ class Music(commands.Cog):
             
             response = await self.bot.wait_for('message', check=check_if_sender_is_requester)
             track = tracks[int(response.content)-1]
-            embed = discord.Embed(color= discord.Color.from_rgb(244,66,146))
-            who = ctx.author.name
-            print(f"track is {track}")
-            embed.title = 'Queued!'
-            embed.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
-            embed.add_field(name="Requested By", value = f"@{who}")
-
-            player.add(requester=ctx.author.id, track = track)
             
-            await ctx.send(embed=embed)
-            if not player.is_playing:
-                await player.play()
+            title = (track["info"]["title"])
+            await self._play(ctx, query=title)
 
         except Exception as e:
             print(e)
@@ -147,13 +138,21 @@ class Music(commands.Cog):
             await ctx.message.add_reaction("🚫")
             return await ctx.send("You'll have to join a voice channel before I can do that.")
 
-        if player.is_connected:
+        if player.is_connected and not player.is_playing:
             player.store('channel', ctx.channel.id)
             await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
             return await ctx.message.add_reaction("🎸")
 
+
+    @commands.command(name="current", aliases=["abhi"])
+    async def _current(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        playing = player.current.title
+        await ctx.send(playing)
+
+
     @commands.command(name='queue', aliases=["q"])
-    async def queue(self, ctx, page: int = 1):
+    async def _queue(self, ctx, page: int = 1):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if(len(player.queue) == 0):
@@ -192,9 +191,11 @@ class Music(commands.Cog):
     @commands.command(name="skip", aliases=["agla", "next"])
     async def _skip(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-        if player.is_playing:
+        if player.is_playing and (len(player.queue) > 0) :
             await player.skip()
             await ctx.message.add_reaction("⏭")
+        else:
+            await ctx.send("No can do!")
 
     @commands.command(name="stop", aliases=["band"])
     async def _stop(self, ctx):
