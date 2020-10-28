@@ -211,6 +211,23 @@ class Music(commands.Cog):
             await player.stop()
             return await ctx.message.add_reaction("⏹") 
 
+    @commands.command(name="loop", aliases=["phirse", "dobara", "repeat"])
+    async def _loop(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        if player.is_playing and player.repeat == False:
+            player.repeat = True
+            track_name = player.current.title
+            await ctx.send(f"Looping {track_name}. Make sure to turn the loop off using the `.loop-off` command!")
+            await ctx.message.add_reaction("🔁")
+
+    @commands.command(name="loop-off")
+    async def _loopoff(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        if player.is_playing and player.repeat == True:
+            player.repeat = False
+            track_name = player.current.title
+            await ctx.send(f"Wont repeat {track_name} anymore :)")
+    
 
     @commands.command(name="remove", aliases=["hata"])
     async def _remove(self, ctx, *, number):
