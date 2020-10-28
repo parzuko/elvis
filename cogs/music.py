@@ -88,11 +88,14 @@ class Music(commands.Cog):
             embed.description = f'{results["playlistInfo"]["name"]} - {len(tracks)} tracks'
         else:
             track = results['tracks'][0]
-            who = ctx.author.name
-            print(f"track is {track}")
-            embed.title = 'Now Playing!'
+            who = ctx.author.id
+            #print(f"track is {track}")
+            if len(player.queue) == 0 and not player.is_playing:
+                embed.title = 'Now Playing!'
+            else:
+                embed.title = "Queued!"
             embed.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
-            embed.add_field(name="Requested By", value = f"@{who}")
+            embed.add_field(name="Requested By", value = f"<@{who}>")
 
             # You can attach additional information to audiotracks through kwargs, however this involves
             # constructing the AudioTrack class yourself.
@@ -144,11 +147,14 @@ class Music(commands.Cog):
             return await ctx.message.add_reaction("🎸")
 
 
-    @commands.command(name="current", aliases=["abhi"])
+    @commands.command(name="current", aliases=["abhi", "song", "np"])
     async def _current(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-        playing = player.current.title
-        await ctx.send(playing)
+        try:
+            playing = player.current.title
+            await ctx.send(playing)
+        except Exception:
+            await ctx.send("Nothings playing!")
 
 
     @commands.command(name='queue', aliases=["q"])
