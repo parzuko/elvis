@@ -9,6 +9,9 @@ import math
 url_rx = re.compile(r'https?://(?:www\.)?.+')
 
 
+time_hashmap = {}
+
+
 class Music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -98,6 +101,12 @@ class Music(commands.Cog):
             embed.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
             embed.add_field(name="Requested By", value = f"<@{who}>")
 
+            track_title = track["info"]["title"]
+            track_length = track["info"]["length"]
+
+            if track_title not in time_hashmap:
+                time_hashmap[track_title] = track_length
+
             # You can attach additional information to audiotracks through kwargs, however this involves
             # constructing the AudioTrack class yourself.
             track = lavalink.models.AudioTrack(track, ctx.author.id, recommended=True)
@@ -173,7 +182,7 @@ class Music(commands.Cog):
 
         queue_list = ''
         for index, track in enumerate(player.queue[start:end], start=start):
-            queue_list += f'`{index + 1}.` [**{track.title}**]({track.uri})\n'
+            queue_list += f'`{index + 1}.` [{track.title}]({track.uri})\n'
 
         embed = discord.Embed(colour=discord.Color.from_rgb(244,66,146),
                           description=f'There are **{len(player.queue)} tracks** in queue:\n\n{queue_list}')
@@ -253,7 +262,45 @@ class Music(commands.Cog):
         song_list.pop(index)
         await ctx.message.add_reaction("🚮")
 
+    
+    @commands.command(name="time", aliases=["kitna"])
+    async def _time(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        if player.is_playing:
+            # Get Current Timestamp
+            current_song_position = player.position
+            current_song_position_in_min = self.convert_to_min_and_seconds(current_song_position)
+            # Get Full Song Length From Memory
+            song_name = player.current.title
+            song_link = player.current.uri
+            song_duration = time_hashmap[song_name]
+            song_duration_in_min = self.convert_to_min_and_seconds(song_duration)
 
+            ratio_of_times = (current_song_position/song_duration) * 100
+            now_playing_cursor = ""
+            ratio_of_times_in_range = ratio_of_times//5 
+            # Make The Cursor
+            for i in range(20):
+                if i == ratio_of_times_in_range:
+                    now_playing_cursor += ":yellow_circle:"
+                else:
+                    now_playing_cursor += "▬"
+
+
+            embed = discord.Embed(color= discord.Color.from_rgb(244,66,146))
+            embed.description = f"[{song_name}]({song_link})\n"
+            embed.description += f"{now_playing_cursor} {current_song_position_in_min} / {song_duration_in_min}"
+
+            await ctx.send(embed=embed)
+
+
+    @commands.command(name="seek")
+    async def _seek(self, ctx, *, time_stamp):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        if player.is_playing:
+            time_stamp = int(time_stamp)
+            time_stamp *= 1000
+            await player.seek(position=time_stamp)
 
     def cog_unload(self):
         """ Cog unload handler. This removes any event hooks that were registered. """
@@ -336,7 +383,15 @@ class Music(commands.Cog):
     def convert_to_min_and_seconds(self, milliseconds: int):
         minutes = milliseconds // 60000
         seconds = round(((milliseconds % 60000) // 1000), 0)
+        minutes = int(minutes)
+        seconds = int(seconds)
+        if len(str(seconds)) == 1:
+            seconds = "0" + str(seconds)
         return f"{minutes}:{seconds}"
 
 def setup(bot):
     bot.add_cog(Music(bot))
+
+
+# line ▬▬▬▬▬▬▬▬▬▬▬▬
+# dot :yellow_circle:
