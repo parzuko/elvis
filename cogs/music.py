@@ -53,7 +53,7 @@ class Music(commands.Cog):
             
             title = (track["info"]["title"])
             await self._play(ctx, query=title)
-            await ctx.send("To remove a song just say `remove [song number]`")
+            await ctx.send("To remove a song just say `.remove [song number]`")
 
         except Exception as e:
             print(e)
