@@ -157,16 +157,6 @@ class Music(commands.Cog):
             return await ctx.message.add_reaction("🎸")
 
 
-    @commands.command(name="current", aliases=["abhi", "song", "np"])
-    async def _current(self, ctx):
-        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-        try:
-            playing = player.current.title
-            await ctx.send(playing)
-        except Exception:
-            await ctx.send("Nothings playing!")
-
-
     @commands.command(name='queue', aliases=["q"])
     async def _queue(self, ctx, page: int = 1):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
@@ -263,7 +253,7 @@ class Music(commands.Cog):
         await ctx.message.add_reaction("🚮")
 
     
-    @commands.command(name="time", aliases=["kitna"])
+    @commands.command(name="time", aliases=["kitna", "np", "song", "abhi"])
     async def _time(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         if player.is_playing:
@@ -292,6 +282,8 @@ class Music(commands.Cog):
             embed.description += f"{now_playing_cursor} {current_song_position_in_min} / {song_duration_in_min}"
 
             await ctx.send(embed=embed)
+        else:
+            await ctx.send("Nothings Playing !")
 
 
     @commands.command(name="seek")
