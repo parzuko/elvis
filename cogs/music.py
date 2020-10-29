@@ -272,7 +272,7 @@ class Music(commands.Cog):
             # Make The Cursor
             for i in range(20):
                 if i == ratio_of_times_in_range:
-                    now_playing_cursor += ":yellow_circle:"
+                    now_playing_cursor += ":small_blue_diamond:"
                 else:
                     now_playing_cursor += "▬"
 
@@ -290,9 +290,16 @@ class Music(commands.Cog):
     async def _seek(self, ctx, *, time_stamp):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         if player.is_playing:
-            time_stamp = int(time_stamp)
-            time_stamp *= 1000
-            await player.seek(position=time_stamp)
+
+            if ":" not in time_stamp:
+                time_stamp = int(time_stamp)
+                time_stamp *= 1000
+                return await player.seek(position=time_stamp)
+            else:
+                the_minute = time_stamp[0]
+                the_second = time_stamp[2:]
+                time_stamp = self.convert_to_milli(the_minute, the_second)
+                return await player.seek(position=time_stamp)
 
     def cog_unload(self):
         """ Cog unload handler. This removes any event hooks that were registered. """
@@ -380,6 +387,13 @@ class Music(commands.Cog):
         if len(str(seconds)) == 1:
             seconds = "0" + str(seconds)
         return f"{minutes}:{seconds}"
+
+    def convert_to_milli(self, minute, second):
+        minute = int(minute) * 60000
+        second = int(second) * 1000
+        return minute + second
+
+
 
 def setup(bot):
     bot.add_cog(Music(bot))
