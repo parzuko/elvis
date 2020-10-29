@@ -4,6 +4,10 @@
 
 #### Elvis is a music + utility bot written in python using [discord.py](https://discordpy.readthedocs.io/en/latest/). Elvis comes with all traditional music commands and a few easter egg commands. Use Elvis as is, or set him up your way!
 
+<p align="center">
+  <img src="https://media.giphy.com/media/pJ8WwKen0WkKvesYYe/giphy.gif" />
+</p>
+
 
 ## :computer: Installing Locally
 
@@ -12,6 +16,10 @@
 # Clone this repository.
 git clone https://github.com/parzuko/elvis.git
 cd elvis
+
+# Setup Your Personal Tokens
+echo >> "TOKEN=<YOUR_TOKEN>" >> .env
+echo >> "WEATHER=<YOUR_API_KEY" >> .env
 
 # Must have Java 11+ installed on machine
 java -jar Lavalink.jar
