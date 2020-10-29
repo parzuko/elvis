@@ -1,5 +1,11 @@
-import re
+"""
+Created By Jivansh Sharma 
+October 2020
+@parzuko
+"""
 
+
+import re
 import discord
 import lavalink
 from discord.ext import commands
@@ -23,7 +29,7 @@ class Music(commands.Cog):
 
         lavalink.add_event_hook(self.track_hook)
 
-    @commands.command(name="search", aliases=["s", "dhundh"])
+    @commands.command(name="search", aliases=["s", "dhundh", "khoj"])
     async def _search(self, ctx, *, query):
         try:
             player = player = self.bot.lavalink.player_manager.get(ctx.guild.id)
@@ -47,6 +53,7 @@ class Music(commands.Cog):
             
             title = (track["info"]["title"])
             await self._play(ctx, query=title)
+            await ctx.send("To remove a song just say `remove [song number]`")
 
         except Exception as e:
             print(e)
@@ -240,7 +247,7 @@ class Music(commands.Cog):
         else:
             return await ctx.send("Nothing to randomize!")
 
-    @commands.command(name="remove", aliases=["hata"])
+    @commands.command(name="remove", aliases=["hata", "delete"])
     async def _remove(self, ctx, *, number):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         song_list = player.queue
@@ -253,7 +260,7 @@ class Music(commands.Cog):
         await ctx.message.add_reaction("🚮")
 
     
-    @commands.command(name="time", aliases=["kitna", "np", "song", "abhi"])
+    @commands.command(name="time", aliases=["kitna", "np", "song", "abhi", "current"])
     async def _time(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         if player.is_playing:
@@ -286,7 +293,7 @@ class Music(commands.Cog):
             await ctx.send("Nothings Playing !")
 
 
-    @commands.command(name="seek")
+    @commands.command(name="seek", aliases=["goto", "kud"])
     async def _seek(self, ctx, *, time_stamp):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         if player.is_playing:

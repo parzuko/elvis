@@ -66,13 +66,15 @@ class Help(commands.Cog):
         embed.add_field(name = "`.join`", value = "Elvis joins your voice channel.", inline = False)
         embed.add_field(name = "`.go`", value = "Elvis leaves voice channel.", inline = False)
         embed.add_field(name = "`.play [song title]`", value = "Elvis plays requested song.", inline = False)
+        embed.add_field(name = "`.seek [time] `", value = "Elvis jumps track to requested time.", inline = False)
+        embed.add_field(name = "`.search [song title] `", value = "Elvis looks for songs.", inline = False)
         embed.add_field(name = "`.stop`", value = "Elvis terminates entire queue of songs", inline = False)
         embed.add_field(name = "`.pause`", value = "Elvis temporarily stops the record", inline = False)
         embed.add_field(name = "`.resume`", value = "Elvis resumes the record where you left off.", inline = False)
         embed.add_field(name = "`.skip`", value = "Elvis skips the current playing song.", inline = False)
         embed.add_field(name = "`.queue`", value = "Elvis displays all songs up next.", inline = False)
         embed.add_field(name = "`.remove [song number]`", value = "Elvis removes song from queue.", inline = False)
-        embed.add_field(name = "`.current`", value = "Elvis displays whats currently being played.", inline = False)
+        embed.add_field(name = "`.song`", value = "Elvis displays whats currently being played.", inline = False)
         embed.add_field(name = "`.shuffle `", value = "Elvis shuffles your queue of songs.", inline = False)
         await ctx.send(embed=embed)
     
@@ -89,7 +91,8 @@ class Help(commands.Cog):
         embed.add_field(name = "`.mausam [city]`", value = "Elivs returns weather of the input city.", inline = False)
         embed.add_field(name = "`.aaja`", value = "Elvis joins your voice channel.", inline = False)
         embed.add_field(name = "`.nikal`", value = "Elvis leaves voice channel.", inline = False)
-        embed.add_field(name = "`.baja[song title]`", value = "Elvis plays requested song.", inline = False)
+        embed.add_field(name = "`.baja [song title]`", value = "Elvis plays requested song.", inline = False)
+        embed.add_field(name = "`.dhundh [song name] `", value = "Elvis looks for songs.", inline = False)
         embed.add_field(name = "`.band`", value = "Elvis terminates entire queue of songs", inline = False)
         embed.add_field(name = "`.ruk`", value = "Elvis temporarily stops the record", inline = False)
         embed.add_field(name = "`.wapas`", value = "Elvis resumes the record where you left off.", inline = False)
@@ -108,15 +111,10 @@ class Help(commands.Cog):
             description = "Due to the recent ban of youtube-dl, your boy Elvis was having some issues streaming music. However, this did not last long as now, I have completely migrated to Lavalink! What does this mean? New Features!"
         )
         embed.set_author(name = "What's New? ",icon_url="https://media.giphy.com/media/be4QJiw3XbkioIsYbR/giphy.gif")
-        
-        # embed.description("Due to the recent ban of youtube-dl, your boy Elvis was having some issues streaming music. However, this did not last long as now, I have completely migrated to Lavalink! What does this mean ? New Features!")
-
+    
         embed.add_field(name = "`.song`", value = "Get a live cursor showing the progress in a track you're listening to!", inline = False)
-
-        embed.add_field(name = "`.search[song name]`", value = "Search from Elvis' library of a gazillion songs to choose your favorite one", inline = False)
-        
-        embed.add_field(name = "`.seek[time]`", value = "Want to skip the boring intro or listen to a line again? Just ask elvis to seek to a new time stamp!", inline = False)
-
+        embed.add_field(name = "`.search [song name]`", value = "Search from Elvis' library of a gazillion songs to choose your favorite one", inline = False)
+        embed.add_field(name = "`.seek [time]`", value = "Want to skip the boring intro or listen to a line again? Just ask elvis to seek to a new time stamp!", inline = False)
         embed.add_field(name = "Try Elvis Now!", value = "So what're you waiting for? Try all these and many more amazing features now! Just type `.play[song]` to get started!", inline = False)
         await ctx.send(embed=embed)
     
