@@ -100,6 +100,26 @@ class Help(commands.Cog):
         embed.add_field(name = "`.khichdi `", value = "Elvis shuffles your queue of songs.", inline = False)
         await ctx.send(embed=embed)
     
+    @commands.command(name = "update")
+    async def _update(self, ctx : commands.Context):
+
+        embed = discord.Embed(
+            color = discord.Color.from_rgb(244,66,146),
+            description = "Due to the recent ban of youtube-dl, your boy Elvis was having some issues streaming music. However, this did not last long as now, I have completely migrated to Lavalink! What does this mean? New Features!"
+        )
+        embed.set_author(name = "What's New? ",icon_url="https://media.giphy.com/media/be4QJiw3XbkioIsYbR/giphy.gif")
+        
+        # embed.description("Due to the recent ban of youtube-dl, your boy Elvis was having some issues streaming music. However, this did not last long as now, I have completely migrated to Lavalink! What does this mean ? New Features!")
+
+        embed.add_field(name = "`.song`", value = "Get a live cursor showing the progress in a track you're listening to!", inline = False)
+
+        embed.add_field(name = "`.search[song name]`", value = "Search from Elvis' library of a gazillion songs to choose your favorite one", inline = False)
+        
+        embed.add_field(name = "`.seek[time]`", value = "Want to skip the boring intro or listen to a line again? Just ask elvis to seek to a new time stamp!", inline = False)
+
+        embed.add_field(name = "Try Elvis Now!", value = "So what're you waiting for? Try all these and many more amazing features now! Just type `.play[song]` to get started!", inline = False)
+        await ctx.send(embed=embed)
+    
 
 def setup(elvis):
     elvis.add_cog(Help(elvis))
