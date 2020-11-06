@@ -24,12 +24,12 @@ class Help(commands.Cog):
         embed.add_field(name = "Weather", value = " `.help-weather`")
         embed.add_field(name = "Music", value = "`.help-music`")
         embed.add_field(name = "??", value = "`.help-easter`")
-        embed.add_field(name = "Elvis", value = "`.help-elvis`")
+        embed.add_field(name = "Share", value = "`.help-elvis`")
         await ctx.send(embed=embed)
     
-    @commands.command(name = "help-elvis", aliases = ["jivansh", "parzuko"])
+    @commands.command(name = "help-elvis", aliases = ["jivansh", "parzuko", "share"])
     async def _help_elvis(self, ctx: commands.Context):
-        desc = "Hey there I'm @[Parzuko](https://github.com/parzuko) also known as @[jivansh](https://www.instagram.com/jivansh/) on most social platforms.\n Have a feature you'd like implemented? Get in touch. "
+        desc = "Hey there I'm @[Parzuko](https://github.com/parzuko) also known as @[jivansh](https://www.instagram.com/jivansh/) on most social platforms.\n To add Elvis to your server, click [here](https://discord.com/oauth2/authorize?client_id=755529764835426355&permissions=8&scope=bot) "
         embed = discord.Embed(
             title = "Who made Elvis?",
             color = discord.Color.from_rgb(244,66,146),
