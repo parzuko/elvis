@@ -2,3 +2,7 @@ __pycache__
 cogs/__pycache__
 .env
 logs
+death.sh
+elvis.out
+lavalink.out
+start.sh
