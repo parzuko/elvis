@@ -12,6 +12,7 @@ youtube-dl = "*"
 "mysql.connector" = "*"
 python-dotenv = "*"
 lavalink = "*"
+pipfile = "*"
 
 [requires]
 python_version = "3.8"
