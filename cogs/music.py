@@ -7,6 +7,7 @@ October 2020
 
 import re
 import discord
+from discord import player
 import lavalink
 from discord.ext import commands
 import random
@@ -53,7 +54,7 @@ class Music(commands.Cog):
             
             title = (track["info"]["title"])
             await self._play(ctx, query=title)
-            await ctx.send("To remove a song just say `.remove [song number]`")
+            
 
         except Exception as e:
             print(e)
@@ -185,6 +186,7 @@ class Music(commands.Cog):
                           description=f'There are **{len(player.queue)} tracks** in queue:\n\n{queue_list}')
         embed.set_footer(text=f'Viewing page {page}/{pages}')
         await ctx.send(embed=embed)
+        await ctx.send("To remove a song just say `.remove [song number]`")
     
     @commands.command(name="pause", aliases=["ruk"])
     async def _pause(self, ctx):
@@ -307,6 +309,14 @@ class Music(commands.Cog):
                 the_second = time_stamp[2:]
                 time_stamp = self.convert_to_milli(the_minute, the_second)
                 return await player.seek(position=time_stamp)
+
+    @commands.command(name="auto-loop", aliases=["loop-queue", "forever"])
+    async def _forever(self, ctx, *, query: str):
+        await self._play(ctx, query=query)
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        if player.is_playing:
+            await ctx.send("Now Start Auto Looping")
+
 
     def cog_unload(self):
         """ Cog unload handler. This removes any event hooks that were registered. """
