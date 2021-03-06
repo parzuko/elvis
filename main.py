@@ -10,7 +10,7 @@ import os
 from get_token import token as TOKEN
 from discord.ext import commands
 
-elvis = commands.Bot(command_prefix = "+")
+elvis = commands.Bot(command_prefix = ".")
 elvis.remove_command("help")
 
 @elvis.event
