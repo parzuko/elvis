@@ -22,6 +22,8 @@ time_hashmap = {}
 class Music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.currently_looping = ""
+        self.queue_to_loop = []
 
         if not hasattr(bot, 'lavalink'):  # This ensures the client isn't overwritten during cog reloads.
             bot.lavalink = lavalink.Client(bot.user.id)
@@ -186,7 +188,7 @@ class Music(commands.Cog):
                           description=f'There are **{len(player.queue)} tracks** in queue:\n\n{queue_list}')
         embed.set_footer(text=f'Viewing page {page}/{pages}')
         await ctx.send(embed=embed)
-        await ctx.send("To remove a song just say `.remove [song number]`")
+        await ctx.send("To remove a song just tell Elvis to `.remove [song number]`")
     
     @commands.command(name="pause", aliases=["ruk"])
     async def _pause(self, ctx):
@@ -220,23 +222,26 @@ class Music(commands.Cog):
             await player.stop()
             return await ctx.message.add_reaction("⏹") 
 
-    @commands.command(name="loop", aliases=["phirse", "dobara", "repeat"])
+    @commands.command(name="loop", aliases=["phirse", "dobara", "repeat", "forever", "auto-loop"])
     async def _loop(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         if player.is_playing and player.repeat == False:
             player.repeat = True
-            track_name = player.current.title
-            await ctx.send(f"Looping {track_name}. Make sure to turn the loop off using the `.loop-off` command!")
+            number_of_songs = len(player.queue) 
+            await ctx.send(f"Looping {number_of_songs} in queue right now! When done, turn the loop off using the `.stop-loop` command!")
             await ctx.message.add_reaction("🔁")
 
-    @commands.command(name="loop-off")
-    async def _loopoff(self, ctx):
+    @commands.command(name="loop-off", aliases=["stop-loop"])
+    async def _stop_loop(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         if player.is_playing and player.repeat == True:
             player.repeat = False
-            track_name = player.current.title
-            await ctx.send(f"Wont repeat {track_name} anymore :)")
-    
+            number_of_songs = len(player.queue)
+            if number_of_songs > 1:
+                await ctx.send(f"Looping has now stopped. After {number_of_songs}, queue will finish")
+            else:
+                await ctx.send("Looping is off now!")
+            return await ctx.message.add_reaction("⏹") 
 
     @commands.command(name="shuffle",aliases=["randomize","mix", "khichdi"])
     async def _shuffle(self, ctx):
@@ -309,13 +314,6 @@ class Music(commands.Cog):
                 the_second = time_stamp[2:]
                 time_stamp = self.convert_to_milli(the_minute, the_second)
                 return await player.seek(position=time_stamp)
-
-    @commands.command(name="auto-loop", aliases=["loop-queue", "forever"])
-    async def _forever(self, ctx, *, query: str):
-        await self._play(ctx, query=query)
-        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-        if player.is_playing:
-            await ctx.send("Now Start Auto Looping")
 
 
     def cog_unload(self):
