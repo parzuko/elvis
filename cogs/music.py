@@ -167,8 +167,8 @@ class Music(commands.Cog):
             return await ctx.message.add_reaction("🎸")
 
 
-    @commands.command(name='queue', aliases=["q"])
-    async def _queue(self, ctx, page: int = 1):
+    @commands.command(name='queue', aliases=["q", "page"])
+    async def _queue(self, ctx, page: int = 1, for_loop=False):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if(len(player.queue) == 0):
@@ -176,6 +176,10 @@ class Music(commands.Cog):
 
         items_per_page = 10
         pages = math.ceil(len(player.queue) / items_per_page)
+
+        if page > pages:
+            await ctx.send("There aren't enough songs for {page} pages!")
+            return await ctx.message.add_reaction("🚫")
 
         start = (page - 1) * items_per_page
         end = start + items_per_page
@@ -186,9 +190,11 @@ class Music(commands.Cog):
 
         embed = discord.Embed(colour=discord.Color.from_rgb(244,66,146),
                           description=f'There are **{len(player.queue)} tracks** in queue:\n\n{queue_list}')
-        embed.set_footer(text=f'Viewing page {page}/{pages}')
+        embed.set_footer(text=f"Viewing page {page}/{pages}\n\nFor more pages type .page [page_number]")
         await ctx.send(embed=embed)
-        await ctx.send("To remove a song just tell Elvis to `.remove [song number]`")
+        #await ctx.send("To see more pages just type `.page [page_number]`")
+        if not for_loop:
+            await ctx.send("To remove a song just tell Elvis to `.remove [song number]`")
     
     @commands.command(name="pause", aliases=["ruk"])
     async def _pause(self, ctx):
@@ -228,6 +234,7 @@ class Music(commands.Cog):
         if player.is_playing and player.repeat == False:
             player.repeat = True
             number_of_songs = len(player.queue) 
+            await self._queue(ctx, for_loop=True)
             await ctx.send(f"Looping {number_of_songs} in queue right now! When done, turn the loop off using the `.stop-loop` command!")
             await ctx.message.add_reaction("🔁")
 
